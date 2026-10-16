@@ -58,59 +58,59 @@ export default function ToolCard({ tool }: ToolCardProps) {
   };
 
   return (
-    <div className="comic-card rounded-2xl relative flex flex-col justify-between p-6 overflow-hidden group">
+    <div className="comic-card rounded-2xl relative flex flex-col justify-between p-5 overflow-hidden group">
       {/* Funky Corner Tape Graphic */}
-      <div className="absolute -top-1.5 -right-2 z-10">
-        <span className={`${getTapeStyle(tool.category)} text-[10px]`}>
+      <div className="absolute -top-1 -right-1.5 z-10">
+        <span className={`${getTapeStyle(tool.category)} text-[9px] py-0.5 px-2`}>
           {tool.badge || `${tool.category.toUpperCase()} 💥`}
         </span>
       </div>
 
       <div>
         {/* Header Icon + Number */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-3">
           <div
-            className={`w-14 h-14 rounded-2xl flex items-center justify-center bg-gradient-to-tr ${tool.gradient} border-3 border-black shadow-brutal group-hover:rotate-6 group-hover:scale-105 transition-all`}
+            className={`w-11 h-11 rounded-xl flex items-center justify-center bg-gradient-to-tr ${tool.gradient} border-2 border-black shadow-brutal group-hover:rotate-6 group-hover:scale-105 transition-all`}
           >
-            <IconComponent className="w-7 h-7 text-white stroke-[2.5]" />
+            <IconComponent className="w-5 h-5 text-white stroke-[2.5]" />
           </div>
 
-          <span className="text-xs font-black px-2.5 py-1 rounded-lg bg-black text-funky-yellow border border-slate-700 tracking-wider">
+          <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-black text-funky-yellow border border-slate-700 tracking-wider">
             #{tool.displayOrder.toString().padStart(2, "0")}
           </span>
         </div>
 
         {/* Title */}
-        <h3 className="text-xl font-black text-white group-hover:text-funky-yellow transition-colors line-clamp-1 mb-1 tracking-tight">
+        <h3 className="text-base sm:text-lg font-black text-white group-hover:text-funky-yellow transition-colors line-clamp-1 mb-1 tracking-tight">
           {tool.title}
         </h3>
 
         {/* Catchy Desi Punchline */}
-        <div className="p-2 rounded-xl bg-black/60 border border-slate-800 my-2.5">
-          <p className="text-xs font-black text-funky-yellow italic line-clamp-1">
+        <div className="py-1 px-2.5 rounded-lg bg-black/60 border border-slate-800 my-2">
+          <p className="text-[11px] font-bold text-funky-yellow italic line-clamp-1">
             &ldquo;{tool.tagline}&rdquo;
           </p>
         </div>
 
         {/* Description */}
-        <p className="text-xs text-slate-300 font-medium line-clamp-2 leading-relaxed">
+        <p className="text-[11px] text-slate-300 font-normal line-clamp-2 leading-relaxed">
           {tool.description}
         </p>
       </div>
 
       {/* Action Footer */}
-      <div className="mt-6 pt-4 border-t-2 border-dashed border-slate-800 flex items-center justify-between gap-3">
-        <span className="text-[11px] font-black uppercase tracking-wider text-funky-neonGreen flex items-center gap-1">
-          <Zap className="w-3.5 h-3.5 text-funky-neonGreen fill-funky-neonGreen" />
+      <div className="mt-4 pt-3 border-t-2 border-dashed border-slate-800 flex items-center justify-between gap-2">
+        <span className="text-[10px] font-black uppercase tracking-wider text-funky-neonGreen flex items-center gap-1">
+          <Zap className="w-3 h-3 text-funky-neonGreen fill-funky-neonGreen" />
           <span>INSTANT FUN</span>
         </span>
 
         <Link
           href={`/${tool.slug}`}
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black text-black bg-funky-yellow hover:bg-yellow-300 border-2 border-black shadow-brutal active:translate-x-0.5 active:translate-y-0.5 transition-all uppercase tracking-wider group-hover:bg-funky-neonGreen"
+          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-black text-black bg-funky-yellow hover:bg-yellow-300 border-2 border-black shadow-brutal active:translate-x-0.5 active:translate-y-0.5 transition-all uppercase tracking-wider group-hover:bg-funky-neonGreen"
         >
           <span>Try Kar Bhai</span>
-          <ArrowRight className="w-3.5 h-3.5" />
+          <ArrowRight className="w-3 h-3" />
         </Link>
       </div>
     </div>
