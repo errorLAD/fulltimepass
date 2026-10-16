@@ -1,0 +1,93 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Tool {
+  id              String           @id @default(cuid())
+  title           String
+  slug            String           @unique
+  description     String
+  category        String           // Friends, Relationship, Personality, Money, Shaadi
+  icon            String           // e.g. "Flame", "Flag", "HeartCrack", "Users", "Ring", "Wallet", "MessageCircle", "Brain", "FileText", "Drum"
+  enabled         Boolean          @default(true)
+  displayOrder    Int              @default(0)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  questions       Question[]
+  resultTemplates ResultTemplate[]
+  toolEvents      ToolEvent[]
+  dailyStats      DailyToolStats[]
+
+  @@index([slug])
+  @@index([category])
+}
+
+model Question {
+  id             String   @id @default(cuid())
+  toolId         String
+  questionText   String
+  displayOrder   Int      @default(0)
+  answerOptions  Json     // Array of { text: string, score: number, tag?: string, icon?: string }
+  scoringConfig  Json?    // Optional scoring metadata
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  tool           Tool     @relation(fields: [toolId], references: [id], onDelete: Cascade)
+
+  @@index([toolId])
+}
+
+model ResultTemplate {
+  id                String   @id @default(cuid())
+  toolId            String
+  resultTitle       String
+  resultDescription String
+  scoreMin          Int?
+  scoreMax          Int?
+  tag               String?
+  templateVars      Json?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  tool              Tool     @relation(fields: [toolId], references: [id], onDelete: Cascade)
+
+  @@index([toolId])
+  @@index([scoreMin, scoreMax])
+}
+
+model ToolEvent {
+  id        String   @id @default(cuid())
+  toolId    String
+  eventType String   // "OPEN", "COMPLETE", "DOWNLOAD", "SHARE_ATTEMPT"
+  meta      Json?
+  createdAt DateTime @default(now())
+
+  tool      Tool     @relation(fields: [toolId], references: [id], onDelete: Cascade)
+
+  @@index([toolId, eventType])
+  @@index([createdAt])
+}
+
+model DailyToolStats {
+  id          String   @id @default(cuid())
+  toolId      String
+  date        String   // "YYYY-MM-DD"
+  opens       Int      @default(0)
+  completions Int      @default(0)
+  downloads   Int      @default(0)
+  shares      Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tool        Tool     @relation(fields: [toolId], references: [id], onDelete: Cascade)
+
+  @@unique([toolId, date])
+  @@index([toolId])
+  @@index([date])
+}
