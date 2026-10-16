@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Flame, Sparkles, Check, AlertCircle } from "lucide-react";
+import { Flame, Sparkles, Check, AlertCircle, Zap } from "lucide-react";
 import { ROAST_TRAITS, ROAST_STYLES, ROAST_TEMPLATES } from "@/lib/data/toolData";
 import ResultCard from "@/components/shared/ResultCard";
 import { ResultCardData } from "@/lib/types";
@@ -41,10 +41,10 @@ export default function RoastMyFriendPage() {
     const traitObjects = ROAST_TRAITS.filter((t) => selectedTraits.includes(t.id));
     const traitPunchlines = traitObjects.map((t) => t.label);
 
-    let badge = "Certified Aukaat Out of Bounds 🔥";
+    let badge = "Aukaat Out of Bounds 🔥";
     if (selectedStyle === "friendly") badge = "Pyaar Bhari Beizzati 🥰";
-    if (selectedStyle === "savage") badge = "Emotional Damage Level: 999% 💀";
-    if (selectedStyle === "best_friend") badge = "Chaddi-Buddy Roast Supreme 🤝";
+    if (selectedStyle === "savage") badge = "Emotional Damage: 999% 💀";
+    if (selectedStyle === "best_friend") badge = "Chaddi-Buddy Roast 🤝";
 
     setResult({
       toolSlug: "roast-my-friend",
@@ -52,7 +52,7 @@ export default function RoastMyFriendPage() {
       category: "Friends",
       targetName: name,
       badgeTitle: badge,
-      subtitle: `Style: ${selectedStyle.toUpperCase()} ROAST`,
+      subtitle: `Official Mode: ${selectedStyle.toUpperCase()} ROAST`,
       description: baseTemplate,
       punchline: traitPunchlines.length > 0
         ? `Primary Crime: ${traitPunchlines[0]}`
@@ -75,17 +75,16 @@ export default function RoastMyFriendPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
+    <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12 halftone-pattern">
       {/* Page Title & Intro */}
       <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/30 text-orange-400 text-xs font-bold mb-3">
-          <Flame className="w-4 h-4 text-orange-500" />
-          <span>FullTimePass • Friend Roaster</span>
+        <div className="funky-tape text-xs mb-3">
+          🔥 BRO CODE ROAST LABORATORY
         </div>
-        <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
+        <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-white uppercase tracking-tight">
           Roast My Friend 🔥
         </h1>
-        <p className="mt-3 text-sm sm:text-base text-slate-300">
+        <p className="mt-3 text-xs sm:text-base text-slate-300 font-bold">
           Enter your friend&apos;s name, pick their toxic or funny habits, and generate a customized Hinglish roast card to blast them on WhatsApp.
         </p>
       </div>
@@ -93,10 +92,10 @@ export default function RoastMyFriendPage() {
       {result ? (
         <ResultCard data={result} onReset={handleReset} />
       ) : (
-        <form onSubmit={handleGenerate} className="max-w-2xl mx-auto space-y-8">
+        <form onSubmit={handleGenerate} className="max-w-2xl mx-auto space-y-6">
           {/* 1. Friend Name Input */}
-          <div className="p-6 rounded-3xl bg-slate-900/80 border-2 border-slate-800 backdrop-blur-md">
-            <label className="block text-sm font-bold text-white mb-2">
+          <div className="p-6 rounded-3xl bg-slate-950 border-4 border-black shadow-brutal">
+            <label className="block text-sm font-black uppercase tracking-wider text-white mb-2">
               Dost ka Naam ya Nickname 👤
             </label>
             <input
@@ -107,11 +106,11 @@ export default function RoastMyFriendPage() {
                 setFriendName(e.target.value);
                 if (error) setError("");
               }}
-              className="w-full px-4 py-3.5 rounded-xl bg-slate-950 border border-slate-700 text-base text-white placeholder-slate-500 focus:outline-none focus:border-orange-500 transition-colors"
+              className="w-full px-4 py-3.5 rounded-xl bg-slate-900 border-2 border-black text-base font-bold text-white placeholder-slate-500 focus:outline-none focus:border-funky-yellow transition-colors shadow-brutal"
               maxLength={40}
             />
             {error && (
-              <p className="text-xs font-bold text-red-400 mt-2 flex items-center gap-1.5">
+              <p className="text-xs font-black text-funky-pink mt-2 flex items-center gap-1.5 uppercase">
                 <AlertCircle className="w-4 h-4" />
                 <span>{error}</span>
               </p>
@@ -119,8 +118,8 @@ export default function RoastMyFriendPage() {
           </div>
 
           {/* 2. Roast Style Selector */}
-          <div className="p-6 rounded-3xl bg-slate-900/80 border-2 border-slate-800 backdrop-blur-md">
-            <label className="block text-sm font-bold text-white mb-3">
+          <div className="p-6 rounded-3xl bg-slate-950 border-4 border-black shadow-brutal">
+            <label className="block text-sm font-black uppercase tracking-wider text-white mb-3">
               Roast Style Choose Karo 🎯
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -129,16 +128,16 @@ export default function RoastMyFriendPage() {
                   key={st.id}
                   type="button"
                   onClick={() => setSelectedStyle(st.id as any)}
-                  className={`p-4 rounded-2xl border-2 text-left transition-all ${
+                  className={`p-4 rounded-2xl border-3 text-left transition-all cursor-pointer ${
                     selectedStyle === st.id
-                      ? "bg-orange-500/15 border-orange-500 text-white shadow-md shadow-orange-500/10 scale-[1.02]"
-                      : "bg-slate-950/60 border-slate-800 hover:border-slate-700 text-slate-300"
+                      ? "bg-funky-yellow border-black text-black shadow-brutal translate-x-[-1px] translate-y-[-1px]"
+                      : "bg-slate-900 border-black hover:border-funky-yellow text-slate-300 shadow-brutal"
                   }`}
                 >
-                  <div className="text-sm font-bold text-white mb-1">
+                  <div className="text-sm font-black uppercase mb-1">
                     {st.label}
                   </div>
-                  <div className="text-xs text-slate-400">
+                  <div className="text-xs font-bold text-slate-400">
                     {st.description}
                   </div>
                 </button>
@@ -147,12 +146,12 @@ export default function RoastMyFriendPage() {
           </div>
 
           {/* 3. Pick Habits/Traits */}
-          <div className="p-6 rounded-3xl bg-slate-900/80 border-2 border-slate-800 backdrop-blur-md">
+          <div className="p-6 rounded-3xl bg-slate-950 border-4 border-black shadow-brutal">
             <div className="flex items-center justify-between mb-3">
-              <label className="block text-sm font-bold text-white">
+              <label className="block text-sm font-black uppercase tracking-wider text-white">
                 Dost ki Funny Adatein (Pick 1 to 4) 🤪
               </label>
-              <span className="text-xs text-slate-400">
+              <span className="text-xs font-black text-funky-yellow px-2 py-0.5 bg-black border border-slate-800 rounded">
                 {selectedTraits.length}/4 selected
               </span>
             </div>
@@ -165,17 +164,17 @@ export default function RoastMyFriendPage() {
                     key={trait.id}
                     type="button"
                     onClick={() => toggleTrait(trait.id)}
-                    className={`p-3 rounded-xl border text-left text-xs font-semibold flex items-center justify-between gap-2 transition-all ${
+                    className={`p-3 rounded-xl border-2 text-left text-xs font-black flex items-center justify-between gap-2 transition-all cursor-pointer ${
                       isSelected
-                        ? "bg-orange-500/20 border-orange-500 text-orange-200"
-                        : "bg-slate-950/50 border-slate-800 text-slate-300 hover:border-slate-700 hover:bg-slate-800/40"
+                        ? "bg-funky-pink border-black text-white shadow-brutal"
+                        : "bg-slate-900 border-black text-slate-300 hover:border-funky-yellow hover:text-white"
                     }`}
                   >
                     <span className="flex items-center gap-2">
                       <span>{trait.icon}</span>
                       <span>{trait.label}</span>
                     </span>
-                    {isSelected && <Check className="w-4 h-4 text-orange-400 shrink-0" />}
+                    {isSelected && <Check className="w-4 h-4 text-white stroke-[3] shrink-0" />}
                   </button>
                 );
               })}
@@ -186,10 +185,10 @@ export default function RoastMyFriendPage() {
           <div className="pt-2 text-center">
             <button
               type="submit"
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl text-base font-black text-slate-950 bg-gradient-to-r from-amber-400 via-orange-400 to-pink-500 shadow-desi-pop hover:shadow-desi-pop-hover hover:-translate-y-0.5 active:translate-y-0 transition-all"
+              className="w-full sm:w-auto px-8 py-4 rounded-2xl text-base font-black uppercase tracking-wider text-black bg-funky-yellow hover:bg-yellow-300 border-3 border-black shadow-brutal hover:shadow-brutal-hover active:translate-x-1 active:translate-y-1 transition-all cursor-pointer"
             >
               <span className="flex items-center justify-center gap-2">
-                <Sparkles className="w-5 h-5 text-slate-950" />
+                <Sparkles className="w-5 h-5 fill-black" />
                 <span>Generate Savage Roast Card 🔥</span>
               </span>
             </button>

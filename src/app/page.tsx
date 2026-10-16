@@ -11,10 +11,14 @@ import {
   Smile,
   ShieldCheck,
   CheckCircle,
-  HelpCircle,
+  Zap,
+  Bomb,
+  Skull,
+  Trophy,
 } from "lucide-react";
 import { TOOLS, CATEGORIES } from "@/lib/data/tools";
 import ToolCard from "@/components/shared/ToolCard";
+import BroCodeTicker from "@/components/shared/BroCodeTicker";
 import { ToolCategory } from "@/lib/types";
 import { getRandomItem } from "@/lib/utils";
 import { useRouter } from "next/navigation";
@@ -44,89 +48,111 @@ export default function HomePage() {
   };
 
   return (
-    <div className="space-y-16 sm:space-y-24 pb-12">
-      {/* 1. HERO SECTION */}
-      <section className="relative pt-12 sm:pt-20 pb-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
-        {/* Decorative ambient glowing circles */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] sm:w-[600px] h-[350px] sm:h-[600px] bg-gradient-to-tr from-orange-500/15 via-pink-500/10 to-yellow-500/15 rounded-full blur-3xl -z-10 pointer-events-none" />
-
-        {/* Small Pill Tag */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900 border border-orange-500/30 text-orange-400 text-xs sm:text-sm font-bold shadow-lg shadow-orange-500/10 mb-6">
-          <Flame className="w-4 h-4 text-orange-500 animate-bounce" />
-          <span>India&apos;s #1 Desi Timepass & Entertainment Hub</span>
+    <div className="space-y-12 sm:space-y-16 pb-16 halftone-pattern">
+      {/* 1. HERO SECTION WITH FUNKY GRAPHICS */}
+      <section className="relative pt-10 sm:pt-16 pb-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
+        {/* Floating Tilted Graphic Stickers */}
+        <div className="hidden lg:block absolute top-8 left-6 -rotate-6 animate-floatSlow">
+          <span className="funky-tape text-xs">
+            🔥 100% DESI BAKCHODI
+          </span>
+        </div>
+        <div className="hidden lg:block absolute top-12 right-8 rotate-6 animate-floatSlow" style={{ animationDelay: '1.5s' }}>
+          <span className="funky-tape-pink text-xs">
+            🍻 DIL PE MAT LENA BRO!
+          </span>
+        </div>
+        <div className="hidden sm:block absolute bottom-4 left-12 rotate-3">
+          <span className="funky-tape-cyan text-xs">
+            ⚡ WHATSAPP READY CARDS
+          </span>
+        </div>
+        <div className="hidden sm:block absolute bottom-8 right-14 -rotate-3">
+          <span className="funky-tape-green text-xs">
+            💥 ZERO BORING ADVICE
+          </span>
         </div>
 
-        {/* Big Catchy Desi Headline */}
-        <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-white max-w-4xl mx-auto leading-[1.1] sm:leading-[1.15]">
-          Bore ho rahe ho?{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-pink-500">
+        {/* Comic Pill Badge */}
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-funky-yellow border-3 border-black text-black text-xs sm:text-sm font-black shadow-brutal mb-6 uppercase tracking-wider">
+          <Zap className="w-4 h-4 fill-black text-black" />
+          <span>India&apos;s Desi Timepass Hub & Bro Code HQ</span>
+        </div>
+
+        {/* Big Bold Headline */}
+        <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter text-white max-w-5xl mx-auto leading-[1.05]">
+          Bore ho rahe ho? <br className="hidden sm:inline" />
+          <span className="funky-gradient-text drop-shadow-[0_4px_16px_rgba(255,230,0,0.4)]">
             Kuch timepass karte hain!
           </span>
         </h1>
 
         {/* Subtitle */}
-        <p className="mt-6 text-base sm:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
-          10 savage roasts, red-flag meters, group chat cabinets, rishta value calculators, and recovery notices made for Indian friend groups, couples & WhatsApp squads.
+        <p className="mt-5 text-sm sm:text-lg md:text-xl text-slate-300 font-bold max-w-3xl mx-auto leading-relaxed">
+          Savage friend roasts, red-flag meters, group chat cabinets, rishta market values, and recovery warrants built for your squad&apos;s WhatsApp groups.
         </p>
 
-        {/* CTA Buttons */}
+        {/* Hero CTAs */}
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
           <a
             href="#all-tools"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-2xl text-base font-black text-slate-950 bg-gradient-to-r from-amber-400 via-orange-400 to-pink-500 shadow-desi-pop hover:shadow-desi-pop-hover hover:-translate-y-0.5 active:translate-y-0 transition-all"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-2xl text-base font-black text-black bg-funky-yellow hover:bg-yellow-300 border-3 border-black shadow-brutal hover:shadow-brutal-hover active:translate-x-1 active:translate-y-1 transition-all uppercase tracking-wider"
           >
-            <Sparkles className="w-5 h-5 text-slate-950" />
+            <Sparkles className="w-5 h-5 fill-black" />
             <span>Explore 10 Timepass Tools</span>
-            <ArrowRight className="w-5 h-5" />
+            <ArrowRight className="w-5 h-5 stroke-[3]" />
           </a>
 
           <button
             onClick={handleRandomPick}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl text-base font-bold text-slate-200 bg-slate-900/90 hover:bg-slate-800 border-2 border-slate-700 hover:border-slate-600 transition-all shadow-sm"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl text-base font-black text-white bg-funky-pink hover:bg-pink-600 border-3 border-black shadow-brutal hover:shadow-brutal-hover active:translate-x-1 active:translate-y-1 transition-all uppercase tracking-wider"
           >
-            <Shuffle className="w-5 h-5 text-purple-400" />
-            <span>Surprise Me (Random Tool)</span>
+            <Shuffle className="w-5 h-5" />
+            <span>Surprise Me (Random) 🎲</span>
           </button>
         </div>
 
-        {/* Trust Badges */}
-        <div className="mt-12 flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-xs font-bold text-slate-400">
-          <div className="flex items-center gap-1.5">
-            <CheckCircle className="w-4 h-4 text-green-400" />
+        {/* Trust Graphic Badges */}
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+          <span className="sticker-badge bg-slate-900 text-funky-yellow">
+            <CheckCircle className="w-3.5 h-3.5" />
             <span>100% Free & No Sign-up</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <Share2 className="w-4 h-4 text-orange-400" />
-            <span>WhatsApp Ready Cards</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <Smile className="w-4 h-4 text-amber-400" />
-            <span>Pure Desi Hinglish Comedy</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <ShieldCheck className="w-4 h-4 text-blue-400" />
+          </span>
+          <span className="sticker-badge bg-slate-900 text-funky-pink">
+            <Bomb className="w-3.5 h-3.5" />
+            <span>Instant Downloadable PNG</span>
+          </span>
+          <span className="sticker-badge bg-slate-900 text-funky-neonGreen">
+            <Share2 className="w-3.5 h-3.5" />
+            <span>1-Click WhatsApp Share</span>
+          </span>
+          <span className="sticker-badge bg-slate-900 text-funky-cyan">
+            <ShieldCheck className="w-3.5 h-3.5" />
             <span>Zero Annoying Popups</span>
-          </div>
+          </span>
         </div>
       </section>
 
-      {/* 2. FEATURED TOOLS SECTION */}
+      {/* 2. BRO CODE TICKER MARQUEE */}
+      <BroCodeTicker />
+
+      {/* 3. FEATURED TOOLS SECTION */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-orange-400">
-              🔥 Most Viral
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-white">
-              Trending Right Now
+            <div className="inline-block funky-tape-pink text-[10px] mb-1">
+              VIRAL ON REELS & WHATSAPP
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight">
+              🔥 Trending Right Now
             </h2>
           </div>
           <a
             href="#all-tools"
-            className="text-xs sm:text-sm font-bold text-orange-400 hover:text-orange-300 flex items-center gap-1"
+            className="text-xs sm:text-sm font-black text-funky-yellow hover:text-yellow-300 flex items-center gap-1 uppercase"
           >
-            <span>View All</span>
-            <ArrowRight className="w-4 h-4" />
+            <span>View All 10 Tools</span>
+            <ArrowRight className="w-4 h-4 stroke-[3]" />
           </a>
         </div>
 
@@ -137,39 +163,39 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 3. CATEGORIES & SEARCH FILTER */}
+      {/* 4. POPULAR CATEGORIES & SEARCH */}
       <section id="categories" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="p-6 sm:p-8 rounded-3xl bg-slate-900/60 border border-slate-800 backdrop-blur-md">
+        <div className="p-6 sm:p-8 rounded-3xl bg-slate-950 border-3 border-black shadow-brutal">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-amber-400">
-                Pick Your Vibe
-              </span>
-              <h3 className="text-xl sm:text-2xl font-black text-white">
-                Popular Categories
+              <div className="funky-tape text-[10px] mb-1">
+                FILTER BY VIBE
+              </div>
+              <h3 className="text-xl sm:text-2xl font-black text-white uppercase">
+                Categories & Squad Mood
               </h3>
             </div>
 
             {/* Quick search input */}
-            <div className="w-full md:w-72">
+            <div className="w-full md:w-80">
               <input
                 type="text"
-                placeholder="Search tools (e.g. roast, ex, shaadi)..."
+                placeholder="Search tools (roast, ex, aukaat, shaadi)..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-orange-500"
+                className="w-full px-4 py-3 rounded-xl bg-slate-900 border-2 border-black text-sm text-white placeholder-slate-500 font-bold focus:outline-none focus:border-funky-yellow shadow-brutal"
               />
             </div>
           </div>
 
-          {/* Category Filter Pills */}
+          {/* Neo-brutalist Category Pills */}
           <div className="flex flex-wrap gap-2.5">
             <button
               onClick={() => setSelectedCategory("All")}
-              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+              className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wider transition-all border-2 border-black ${
                 selectedCategory === "All"
-                  ? "bg-orange-500 text-slate-950 shadow-desi-pop-sm"
-                  : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                  ? "bg-funky-yellow text-black shadow-brutal translate-x-[-1px] translate-y-[-1px]"
+                  : "bg-slate-900 text-slate-300 hover:bg-slate-800"
               }`}
             >
               ⚡ All 10 Tools
@@ -178,10 +204,10 @@ export default function HomePage() {
               <button
                 key={cat.label}
                 onClick={() => setSelectedCategory(cat.label)}
-                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-1.5 ${
+                className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wider transition-all flex items-center gap-2 border-2 border-black ${
                   selectedCategory === cat.label
-                    ? "bg-orange-500 text-slate-950 shadow-desi-pop-sm"
-                    : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                    ? "bg-funky-pink text-white shadow-brutal translate-x-[-1px] translate-y-[-1px]"
+                    : "bg-slate-900 text-slate-300 hover:bg-slate-800"
                 }`}
               >
                 <span>{cat.emoji}</span>
@@ -192,34 +218,34 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4. ALL 10 TIMEPASS TOOLS GRID */}
+      {/* 5. ALL 10 TIMEPASS TOOLS GRID */}
       <section id="all-tools" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <span className="text-xs font-bold uppercase tracking-wider text-orange-400">
-            Full Desi Catalog
-          </span>
-          <h2 className="text-2xl sm:text-4xl font-black text-white mt-1">
+          <div className="funky-tape-cyan text-[10px] mb-1">
+            THE COMPLETE TIMEPASS ARSENAL
+          </div>
+          <h2 className="text-2xl sm:text-4xl font-black text-white uppercase tracking-tight">
             All 10 Timepass Tools ({filteredTools.length})
           </h2>
-          <p className="text-sm text-slate-400 mt-1">
-            Pick a tool, answer hilarious questions, generate your custom card, and share the drama!
+          <p className="text-xs sm:text-sm text-slate-400 font-bold mt-1">
+            Pick a tool, answer funny dilemmas, get an aesthetic card, and fire away on WhatsApp!
           </p>
         </div>
 
         {filteredTools.length === 0 ? (
-          <div className="text-center py-16 p-8 rounded-2xl bg-slate-900 border border-slate-800">
-            <p className="text-lg font-bold text-slate-300">
+          <div className="text-center py-16 p-8 rounded-2xl bg-slate-950 border-3 border-black shadow-brutal">
+            <p className="text-xl font-black text-funky-yellow">
               Koi tool nahi mila dost! 🤷‍♂️
             </p>
-            <p className="text-xs text-slate-500 mt-1">
-              Search query clear karo ya category change karo.
+            <p className="text-xs text-slate-400 font-bold mt-1">
+              Search term change karo ya category reset karo.
             </p>
             <button
               onClick={() => {
                 setSelectedCategory("All");
                 setSearchQuery("");
               }}
-              className="mt-4 px-4 py-2 rounded-xl text-xs font-bold bg-orange-500 text-slate-950"
+              className="mt-4 px-5 py-2.5 rounded-xl text-xs font-black bg-funky-yellow text-black border-2 border-black shadow-brutal uppercase"
             >
               Reset Filters
             </button>
@@ -233,53 +259,53 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* 5. HOW IT WORKS SECTION */}
+      {/* 6. HOW IT WORKS COMIC STRIP */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 border border-slate-800 text-center relative overflow-hidden">
-          <span className="text-xs font-bold uppercase tracking-wider text-orange-400">
-            Super Simple Process
-          </span>
-          <h2 className="text-2xl sm:text-4xl font-black text-white mt-1 mb-10">
+        <div className="p-8 sm:p-12 rounded-3xl bg-slate-950 border-4 border-black shadow-brutal text-center relative overflow-hidden">
+          <div className="funky-tape text-[10px] mb-2">
+            3 SIMPLE STEPS
+          </div>
+          <h2 className="text-2xl sm:text-4xl font-black text-white uppercase tracking-tight mb-8">
             How FullTimePass Works
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
             {/* Step 1 */}
-            <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 relative">
-              <span className="w-10 h-10 rounded-xl bg-orange-500 text-slate-950 font-black text-lg flex items-center justify-center mb-4 shadow-desi-pop-sm">
+            <div className="p-6 rounded-2xl bg-slate-900 border-3 border-black shadow-brutal relative">
+              <span className="w-10 h-10 rounded-xl bg-funky-yellow text-black font-black text-lg border-2 border-black flex items-center justify-center mb-4 shadow-brutal">
                 1
               </span>
-              <h3 className="text-lg font-bold text-white mb-2">
-                Choose Your Weapon
+              <h3 className="text-lg font-black text-white mb-2 uppercase">
+                Pick Your Weapon
               </h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Pick from 10 handcrafted desi tools: roast a friend, check your moving-on score, predict wedding kalesh, or generate group chat roles.
+              <p className="text-xs text-slate-300 font-medium leading-relaxed">
+                Choose from 10 tools: roast a friend, check your moving-on score, predict wedding kalesh, or issue an udhaar recovery notice.
               </p>
             </div>
 
             {/* Step 2 */}
-            <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 relative">
-              <span className="w-10 h-10 rounded-xl bg-pink-500 text-slate-950 font-black text-lg flex items-center justify-center mb-4 shadow-desi-pop-sm">
+            <div className="p-6 rounded-2xl bg-slate-900 border-3 border-black shadow-brutal relative">
+              <span className="w-10 h-10 rounded-xl bg-funky-pink text-white font-black text-lg border-2 border-black flex items-center justify-center mb-4 shadow-brutal">
                 2
               </span>
-              <h3 className="text-lg font-bold text-white mb-2">
-                Answer Desi Questions
+              <h3 className="text-lg font-black text-white mb-2 uppercase">
+                Answer Funny Dilemmas
               </h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Fill in funny inputs or answer 3-6 relatable multiple-choice questions about your daily habits, spending, and lifestyle choices.
+              <p className="text-xs text-slate-300 font-medium leading-relaxed">
+                Enter your friend&apos;s nickname or pick from hilarious Indian multiple-choice situations about late replies, Swiggy orders, and chai debates.
               </p>
             </div>
 
             {/* Step 3 */}
-            <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 relative">
-              <span className="w-10 h-10 rounded-xl bg-amber-400 text-slate-950 font-black text-lg flex items-center justify-center mb-4 shadow-desi-pop-sm">
+            <div className="p-6 rounded-2xl bg-slate-900 border-3 border-black shadow-brutal relative">
+              <span className="w-10 h-10 rounded-xl bg-funky-neonGreen text-black font-black text-lg border-2 border-black flex items-center justify-center mb-4 shadow-brutal">
                 3
               </span>
-              <h3 className="text-lg font-bold text-white mb-2">
-                Download & Share on WhatsApp
+              <h3 className="text-lg font-black text-white mb-2 uppercase">
+                Blast on WhatsApp
               </h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Get an instant, high-resolution aesthetic result card. Download as PNG with one click or blast it directly into your WhatsApp groups!
+              <p className="text-xs text-slate-300 font-medium leading-relaxed">
+                Get an instant, high-resolution aesthetic result card. Download as PNG with one click or blast it directly into your squad&apos;s WhatsApp groups!
               </p>
             </div>
           </div>
