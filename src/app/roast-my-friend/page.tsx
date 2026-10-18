@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { Flame, Sparkles, Check, AlertCircle } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Flame, Sparkles, Check, AlertCircle, Volume2 } from "lucide-react";
 import {
   getRoastTraits,
   getRoastStyles,
@@ -10,6 +10,9 @@ import {
 } from "@/lib/data/toolDataHelper";
 import ResultCard from "@/components/shared/ResultCard";
 import RelatedTools from "@/components/shared/RelatedTools";
+import RoastAudioControls from "@/components/roast/RoastAudioControls";
+import RoastRevealSuspense from "@/components/roast/RoastRevealSuspense";
+import { roastAudio } from "@/lib/audio/roastAudio";
 import { ResultCardData } from "@/lib/types";
 import { getRandomItem } from "@/lib/utils";
 import { useLanguage } from "@/lib/language/LanguageContext";
@@ -21,6 +24,14 @@ export default function RoastMyFriendPage() {
   const [selectedStyle, setSelectedStyle] = useState<"friendly" | "savage" | "best_friend">("savage");
   const [error, setError] = useState("");
   const [result, setResult] = useState<ResultCardData | null>(null);
+  const [pendingResult, setPendingResult] = useState<ResultCardData | null>(null);
+  const [isRevealing, setIsRevealing] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      roastAudio.stopAll();
+    };
+  }, []);
 
   const traits = getRoastTraits(language);
   const styles = getRoastStyles(language);
@@ -119,7 +130,7 @@ export default function RoastMyFriendPage() {
           "Aadat: 'Bas 5 minute mein pahunch raha hoon' bol ke sona",
         ];
 
-    setResult({
+    const cardData: ResultCardData = {
       toolSlug: "roast-my-friend",
       toolTitle: "Roast My Friend 🔥",
       category: "Friends",
@@ -139,11 +150,17 @@ export default function RoastMyFriendPage() {
       disclaimer: language === "en"
         ? "Don't take it to heart—roasts are strictly for harmless entertainment and squad love!"
         : "Dil pe mat lena dost, roast sirf entertainment aur pure bhaichare ke liye hai!",
-    });
+    };
+
+    setPendingResult(cardData);
+    setIsRevealing(true);
   };
 
   const handleReset = () => {
+    roastAudio.stopAll();
     setResult(null);
+    setPendingResult(null);
+    setIsRevealing(false);
     setFriendName("");
     setSelectedTraits([]);
     setError("");
@@ -153,9 +170,14 @@ export default function RoastMyFriendPage() {
     <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
       {/* Page Title & Intro */}
       <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold mb-3">
+        <div className="inline-flex flex-wrap items-center justify-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold mb-3 shadow-2xs">
           <Flame className="w-4 h-4 text-amber-500 fill-amber-500" />
           <span>FullTimePass • Roast Laboratory 🔥</span>
+          <span className="text-amber-300">•</span>
+          <span className="flex items-center gap-1 text-amber-900 font-extrabold">
+            <Volume2 className="w-3.5 h-3.5 text-amber-600" />
+            <span>{language === "en" ? "Funny Roast Voice & Audio FX 🔊" : "Roast Voice & Sound Effects 🔊"}</span>
+          </span>
         </div>
         <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight leading-[1.2]">
           Roast My Friend 🔥
@@ -167,8 +189,28 @@ export default function RoastMyFriendPage() {
         </p>
       </div>
 
-      {result ? (
-        <ResultCard data={result} onReset={handleReset} />
+      {isRevealing && pendingResult ? (
+        <RoastRevealSuspense
+          friendName={pendingResult.targetName || friendName}
+          language={language}
+          onComplete={() => {
+            setResult(pendingResult);
+            setIsRevealing(false);
+          }}
+        />
+      ) : result ? (
+        <ResultCard
+          data={result}
+          onReset={handleReset}
+          audioAction={
+            <RoastAudioControls
+              friendName={result.targetName || friendName}
+              description={result.description}
+              punchline={result.punchline}
+              language={language}
+            />
+          }
+        />
       ) : (
         <form onSubmit={handleGenerate} className="max-w-2xl mx-auto space-y-6">
           {/* 1. Friend Name Input */}
