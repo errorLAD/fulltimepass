@@ -1,71 +1,158 @@
 import React from "react";
 import Link from "next/link";
-import { ShieldCheck, ArrowLeft } from "lucide-react";
+import { Metadata } from "next";
+import { ShieldCheck, ArrowLeft, Lock, EyeOff, FileText, Database } from "lucide-react";
 
-export const metadata = {
-  title: "Privacy Policy | FullTimePass.in",
-  description: "Privacy Policy for FullTimePass.in.",
+export const metadata: Metadata = {
+  title: "Privacy Policy — No Data Harvesting, 100% Client-Side Privacy | FullTimePass.in",
+  description:
+    "Privacy Policy for FullTimePass.in — We do not require accounts, sell personal data, or store your jokes. Learn how our privacy-first timepass works.",
+  alternates: {
+    canonical: "https://fulltimepass.in/privacy",
+  },
+  openGraph: {
+    title: "Privacy Policy | FullTimePass.in",
+    description:
+      "Privacy Policy for FullTimePass.in — Learn how our privacy-first entertainment tools operate without accounts or data harvesting.",
+    url: "https://fulltimepass.in/privacy",
+    siteName: "FullTimePass.in",
+    locale: "en_IN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Privacy Policy | FullTimePass.in",
+    description:
+      "Privacy Policy for FullTimePass.in — Zero accounts, zero tracking, 100% privacy.",
+  },
+};
+
+const jsonLdBreadcrumb = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://fulltimepass.in",
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Privacy Policy",
+      "item": "https://fulltimepass.in/privacy",
+    },
+  ],
 };
 
 export default function PrivacyPage() {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12 sm:py-16">
-      <div className="p-8 sm:p-12 rounded-3xl bg-slate-900/80 border-2 border-slate-800 backdrop-blur-md space-y-6">
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20">
-            <ShieldCheck className="w-6 h-6" />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }}
+      />
+      <div className="max-w-4xl mx-auto px-4 py-8 sm:py-16">
+        <div className="p-5 sm:p-10 md:p-12 rounded-3xl bg-white border border-slate-200/80 shadow-xl space-y-8">
+          <div className="flex items-center gap-4">
+            <div className="p-3 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 shadow-2xs">
+              <ShieldCheck className="w-8 h-8" />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-[1.2]">
+                Privacy Policy
+              </h1>
+              <p className="text-sm text-slate-500 font-medium mt-1">
+                Effective Date: October 2026 • FullTimePass.in
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl sm:text-4xl font-black text-white">
-              Privacy Policy
-            </h1>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Effective Date: October 2026
-            </p>
+
+          <div className="p-4 sm:p-5 rounded-2xl bg-emerald-50/80 border border-emerald-200 text-emerald-950 text-sm sm:text-base leading-relaxed font-medium">
+            🔒 <strong>Our Golden Rule:</strong> You do NOT need an account to use FullTimePass.in. We do not sell your personal data, track your identity, or store your friends&apos; names on our servers.
           </div>
-        </div>
 
-        <div className="space-y-4 text-xs sm:text-sm text-slate-300 leading-relaxed">
-          <p>
-            At <strong>FullTimePass.in</strong>, we take your privacy seriously. This Privacy Policy outlines what information we collect (and what we deliberately do NOT collect) when you use our website.
-          </p>
+          <div className="space-y-6 text-base text-slate-600 font-normal leading-relaxed">
+            <div>
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mb-2">
+                1. No Accounts, No Passwords, No Profiles
+              </h3>
+              <p>
+                FullTimePass.in is an open entertainment platform. We do not demand sign-ups, phone numbers, email authentications, or social login permissions to play any of our 20 tools. You remain completely anonymous while using the website.
+              </p>
+            </div>
 
-          <h3 className="text-base font-bold text-white pt-2">1. No User Accounts or Profiles</h3>
-          <p>
-            You do not need to create an account, log in, or provide an email address, phone number, or password to use any of the 10 tools on FullTimePass.in.
-          </p>
+            <div>
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mb-2">
+                2. Client-Side Processing of Personal Inputs
+              </h3>
+              <p>
+                When you input a friend&apos;s nickname, select habits, or enter a fake udhaar amount, that data is processed <strong>strictly in your browser&apos;s active memory</strong>. It is used solely to generate the on-screen card and is not stored in our central databases or linked to any real-world profile.
+              </p>
+            </div>
 
-          <h3 className="text-base font-bold text-white pt-2">2. User-Entered Names & Inputs</h3>
-          <p>
-            When you enter a friend&apos;s nickname or select funny traits, this information is processed locally in your browser to render the comedic card or chat preview. We do not sell, harvest, or link user-entered nicknames to personal identities.
-          </p>
+            <div>
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mb-2">
+                3. High-Resolution Card Downloads &amp; html-to-image
+              </h3>
+              <p>
+                When you click &ldquo;Download Card Image&rdquo;, your browser renders the card into a PNG image using the HTML5 Canvas API (`html-to-image`). The image is saved directly onto your device. It is never uploaded or archived on our servers.
+              </p>
+            </div>
 
-          <h3 className="text-base font-bold text-white pt-2">3. Aggregated Analytics & Events</h3>
-          <p>
-            We collect anonymous, aggregated event counts (e.g., how many times a tool was opened, completed, downloaded, or shared) to understand which timepass experiences our visitors love most. These statistics never contain personally identifiable information.
-          </p>
+            <div>
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mb-2">
+                4. Anonymous Event Analytics
+              </h3>
+              <p>
+                To understand which tools visitors enjoy most, we record aggregated, anonymous counters (such as tool views, completions, image downloads, and WhatsApp share clicks). These aggregated counts never record names, IP addresses, or personal answers.
+              </p>
+            </div>
 
-          <h3 className="text-base font-bold text-white pt-2">4. Image Downloads & Sharing</h3>
-          <p>
-            When you click &ldquo;Download Card Image&rdquo;, the image is generated client-side directly on your device via HTML Canvas (`html-to-image`). We do not store your generated images on our servers.
-          </p>
+            <div>
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mb-2">
+                5. Audio Mute Preferences &amp; Session Storage
+              </h3>
+              <p>
+                We use your browser&apos;s standard `sessionStorage` strictly to remember whether you prefer comedy sound announcements muted or active during your visit. We do not use third-party behavioral advertising cookies.
+              </p>
+            </div>
 
-          <h3 className="text-base font-bold text-white pt-2">5. Cookies & Local Storage</h3>
-          <p>
-            We do not use intrusive cross-site tracking cookies. We may use standard browser session storage to maintain quiz progress while you are actively taking a test.
-          </p>
-        </div>
+            <div>
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mb-2">
+                6. Third-Party Sharing (WhatsApp, Instagram, etc.)
+              </h3>
+              <p>
+                When you share a result to WhatsApp, your device opens WhatsApp directly via universal links (`web.whatsapp.com` on desktop and native app intents on mobile). Your interaction on external apps is governed by those platforms&apos; respective privacy terms.
+              </p>
+            </div>
 
-        <div className="pt-6 border-t border-slate-800">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-orange-400 hover:text-orange-300"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back to Home</span>
-          </Link>
+            <div>
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mb-2">
+                7. Contacting Us Regarding Privacy
+              </h3>
+              <p>
+                If you have questions about our privacy practices, you can contact our privacy squad via our{" "}
+                <Link href="/contact" className="text-amber-600 hover:text-amber-700 underline font-semibold">
+                  Contact Page
+                </Link>
+                .
+              </p>
+            </div>
+          </div>
+
+          <div className="pt-6 border-t border-slate-100 flex items-center justify-between">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-amber-700 hover:text-amber-800 transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to Home</span>
+            </Link>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

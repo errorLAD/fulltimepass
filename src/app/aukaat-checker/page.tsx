@@ -2,12 +2,18 @@
 
 import React, { useState } from "react";
 import { Wallet, Sparkles } from "lucide-react";
-import { AUKAAT_QUESTIONS } from "@/lib/data/toolData";
+import { getAukaatQuestions, getAukaatDiagnoses } from "@/lib/data/toolDataHelper";
 import QuizRunner from "@/components/shared/QuizRunner";
 import ResultCard from "@/components/shared/ResultCard";
+import RelatedTools from "@/components/shared/RelatedTools";
 import { ResultCardData, QuestionOption } from "@/lib/types";
+import { getRandomItem } from "@/lib/utils";
+import { useLanguage } from "@/lib/language/LanguageContext";
 
 export default function AukaatCheckerPage() {
+  const { language } = useLanguage();
+  const isEn = language === "en";
+
   const [yourName, setYourName] = useState("");
   const [started, setStarted] = useState(false);
   const [result, setResult] = useState<ResultCardData | null>(null);
@@ -20,52 +26,54 @@ export default function AukaatCheckerPage() {
   const handleQuizComplete = (
     answers: { questionId: string; selectedOption: QuestionOption }[]
   ) => {
+    // Calibrated wealth and lifestyle score mapping based on 3 questions
     const totalScore = answers.reduce((acc, curr) => acc + curr.selectedOption.score, 0);
-    const maxScore = answers.length * 95;
-    const wealthScore = Math.min(Math.round((totalScore / maxScore) * 100), 99);
+    const minScore = 30;
+    const maxScore = 285;
+    const wealthScore = Math.min(Math.max(Math.round(((totalScore - minScore) / (maxScore - minScore)) * 100), 0), 99);
 
-    let title = "EMI Wala Ambani 💳";
-    let desc = "Starbucks ki coffee haath mein, iPhone latest 24 months EMI pe, aur bank account mein exactly ₹37 bache hain. Bhai dikhawa 100%, savings -10%!";
-    let punchline = "Verdict: Tapri pe wapas aao, financial salvation wahin milegi!";
-
+    const diagnoses: any = getAukaatDiagnoses(language);
+    let chosenDiag: any;
     if (wealthScore >= 80) {
-      title = "Middle Class Warren Buffett 📈";
-      desc = "Savings account disciplined, discount coupons master, bina sale ke kuch nahi kharidte. Paisa bachana aapke DNA mein hai!";
-      punchline = "Verdict: Colony ke sabse sensible citizen award goes to you!";
-    } else if (wealthScore >= 50) {
-      title = "Budget Ka Badshah 👑";
-      desc = "Salary aate hi 3 din Nawab jaisa lifestyle, phir baaki 27 din daal-chawal aur dost se ₹100 ka udhaar mangte hue survival mode on!";
-      punchline = "Verdict: Budgeting app download karo, ya dost se udhaar mangna band karo!";
-    } else if (wealthScore < 30) {
-      title = "Living on Dua & Cashback 🥣";
-      desc = "Google Pay pe ₹3 ka cashback aane pe mini-celebration! Swiggy cart mein 40 minute tak items dekh ke delivery fee dekhte hi app close karne ki aadat.";
-      punchline = "Verdict: Katora King certification delivered!";
+      chosenDiag = getRandomItem(diagnoses.rich);
+    } else if (wealthScore >= 55) {
+      chosenDiag = getRandomItem(diagnoses.middle);
+    } else if (wealthScore >= 30) {
+      chosenDiag = getRandomItem(diagnoses.emi);
+    } else {
+      chosenDiag = getRandomItem(diagnoses.broke);
     }
 
-    const userNameDisplay = yourName.trim() || "Financial Legend";
+    const userNameDisplay = yourName.trim() || (isEn ? "Financial Legend" : "Financial Legend");
 
     setResult({
       toolSlug: "aukaat-checker",
-      toolTitle: "Aukaat Checker 💸",
+      toolTitle: isEn ? "Net Worth Reality Check 💸" : "Aukaat Checker 💸",
       category: "Money",
       userName: userNameDisplay,
-      badgeTitle: title,
-      score: `${wealthScore}/100`,
-      scoreLabel: "Desi Wealth Index",
-      subtitle: "Satirical Financial Lifestyle Audit",
-      description: desc,
-      punchline,
+      badgeTitle: chosenDiag.title,
+      score: `${wealthScore}%`,
+      scoreLabel: isEn ? "Middle-Class Wealth Index" : "Middle-Class Wealth Index",
+      subtitle: isEn ? "Satirical Financial Lifestyle Audit" : "Satirical Financial Lifestyle Audit",
+      description: chosenDiag.desc,
+      punchline: chosenDiag.punchline,
       metrics: [
-        { label: "Swiggy Addiction", value: wealthScore < 50 ? "Severe 🍕" : "Balanced" },
-        { label: "EMI Burden", value: wealthScore < 45 ? "Danger Alert" : "Safe Zone" },
-        { label: "Cashback Luck", value: "₹5 Max" },
+        { label: isEn ? "Takeout Addiction" : "Swiggy Addiction", value: wealthScore < 50 ? (isEn ? "Severe 🍕" : "Severe 🍕") : (isEn ? "Disciplined 🥗" : "Disciplined 🥗") },
+        { label: isEn ? "Debt Burden" : "EMI Burden", value: wealthScore < 45 ? (isEn ? "Red Alert 🚨" : "Red Alert 🚨") : (isEn ? "Safe Zone 🛡️" : "Safe Zone 🛡️") },
+        { label: isEn ? "Cashback Luck" : "Cashback Luck", value: isEn ? "$0.05 Reward Card" : "₹3 Scratch Card" },
       ],
       bulletPoints: [
         `Candidate: ${userNameDisplay}`,
-        "Security Note: No bank credentials or sensitive financial data requested",
-        "Official Recommendation: Treat your friends with tapri chai today!",
+        isEn
+          ? "Security Note: No bank credentials or sensitive financial data requested"
+          : "Security Note: No bank credentials or sensitive financial data requested",
+        isEn
+          ? "Official Recommendation: Treat your friends to coffee today!"
+          : "Official Recommendation: Treat your friends with tapri chai today!",
       ],
-      disclaimer: "Satirical Financial Parody: Entertainment only, does not constitute real financial analysis.",
+      disclaimer: isEn
+        ? "Satirical Financial Parody: Entertainment only, does not constitute real financial analysis."
+        : "Satirical Financial Parody: Entertainment only, does not constitute real financial analysis.",
     });
   };
 
@@ -75,56 +83,61 @@ export default function AukaatCheckerPage() {
     setYourName("");
   };
 
+  const questions = getAukaatQuestions(language);
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
       <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold mb-3">
-          <Wallet className="w-4 h-4 text-emerald-400" />
-          <span>FullTimePass • Financial Roast</span>
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold mb-3">
+          <Wallet className="w-4 h-4 text-emerald-600" />
+          <span>FullTimePass • {isEn ? "Financial Reality Check" : "Financial Roast"}</span>
         </div>
-        <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
-          Aukaat Checker 💸
+        <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight leading-[1.2]">
+          {isEn ? "Net Worth Reality Check 💸" : "Aukaat Checker 💸"}
         </h1>
-        <p className="mt-3 text-sm sm:text-base text-slate-300">
-          Discover your real financial avatar: Are you an EMI Wala Ambani, Budget Ka Badshah, or living on Dua & Cashback? 100% satirical lifestyle audit!
+        <p className="mt-4 text-base sm:text-lg text-slate-600 font-normal leading-relaxed">
+          {isEn
+            ? "Discover your real financial avatar: Are you an Installment Billionaire, Budget Aristocrat, or surviving on coupons & prayers? Answer 3 quick questions for your satirical lifestyle audit!"
+            : "Discover your real financial avatar: Are you an EMI Wala Ambani, Budget Ka Badshah, or living on Dua & Cashback? Answer 3 quick questions for your satirical lifestyle audit!"}
         </p>
       </div>
 
       {result ? (
         <ResultCard data={result} onReset={handleReset} />
       ) : !started ? (
-        <form onSubmit={handleStart} className="max-w-md mx-auto p-6 sm:p-8 rounded-3xl bg-slate-900/90 border-2 border-slate-800 backdrop-blur-md space-y-6">
+        <form onSubmit={handleStart} className="max-w-md mx-auto p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 shadow-xl space-y-6">
           <div>
-            <label className="block text-sm font-bold text-white mb-2">
-              Aapka Naam ya Nickname 👤
+            <label className="block text-sm sm:text-base font-bold text-slate-900 mb-2.5">
+              {isEn ? "Your Name or Nickname 👤" : "Aapka Naam ya Nickname 👤"}
             </label>
             <input
               type="text"
-              placeholder="e.g. Bunty, Harshad Mehta 2.0, Priya..."
+              placeholder={isEn ? "e.g. Warren, Jordan, Taylor, Dave..." : "e.g. Bunty, Harshad Mehta 2.0, Priya..."}
               value={yourName}
               onChange={(e) => setYourName(e.target.value)}
-              className="w-full px-4 py-3.5 rounded-xl bg-slate-950 border border-slate-700 text-base text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition-colors"
+              className="w-full px-4 py-3.5 rounded-xl bg-slate-50 border border-slate-200 text-base font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:bg-white transition-colors"
               maxLength={40}
             />
           </div>
 
           <button
             type="submit"
-            className="w-full py-4 px-6 rounded-2xl text-base font-black text-slate-950 bg-gradient-to-r from-emerald-400 via-teal-400 to-green-400 shadow-desi-pop hover:shadow-desi-pop-hover hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2"
+            className="w-full py-4 px-6 rounded-2xl text-base font-bold text-slate-950 bg-gradient-to-r from-emerald-400 via-teal-400 to-green-400 shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             <Sparkles className="w-5 h-5 text-slate-950" />
-            <span>Check My Aukaat 💸</span>
+            <span>{isEn ? "Check My Financial Reality (3 Questions) 💸" : "Check My Aukaat (3 Questions) 💸"}</span>
           </button>
         </form>
       ) : (
         <QuizRunner
-          questions={AUKAAT_QUESTIONS}
-          toolTitle="Aukaat Checker"
+          questions={questions}
+          toolTitle={isEn ? "Net Worth Reality Check" : "Aukaat Checker"}
           toolSlug="aukaat-checker"
           accentColor="from-emerald-500 via-teal-500 to-green-500"
           onComplete={handleQuizComplete}
         />
       )}
+      <RelatedTools currentSlug="aukaat-checker" />
     </div>
   );
 }

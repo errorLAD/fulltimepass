@@ -1,71 +1,135 @@
 import React from "react";
 import Link from "next/link";
-import { ShieldAlert, ArrowLeft } from "lucide-react";
+import { Metadata } from "next";
+import { ShieldAlert, ArrowLeft, AlertTriangle, Sparkles, Scale } from "lucide-react";
 
-export const metadata = {
-  title: "Disclaimer & Satire Policy | FullTimePass.in",
-  description: "Satire, parody, and entertainment disclaimer for FullTimePass.in.",
+export const metadata: Metadata = {
+  title: "Disclaimer & Satire Policy — 100% Satirical Entertainment | FullTimePass.in",
+  description:
+    "Satire, parody, and entertainment disclaimer for FullTimePass.in — Learn why all notices, meters, and roasts carry zero legal, financial, or medical weight.",
+  alternates: {
+    canonical: "https://fulltimepass.in/disclaimer",
+  },
+  openGraph: {
+    title: "Disclaimer & Satire Policy | FullTimePass.in",
+    description:
+      "All content, tools, recovery notices, and meters on FullTimePass.in are purely satirical works of fictional entertainment. Dil pe mat lo!",
+    url: "https://fulltimepass.in/disclaimer",
+    siteName: "FullTimePass.in",
+    locale: "en_IN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Disclaimer & Satire Policy | FullTimePass.in",
+    description: "Satire and entertainment disclaimer for FullTimePass.in.",
+  },
+};
+
+const jsonLdBreadcrumb = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://fulltimepass.in",
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Disclaimer & Satire Policy",
+      "item": "https://fulltimepass.in/disclaimer",
+    },
+  ],
 };
 
 export default function DisclaimerPage() {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12 sm:py-16">
-      <div className="p-8 sm:p-12 rounded-3xl bg-slate-900/80 border-2 border-slate-800 backdrop-blur-md space-y-6">
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
-            <ShieldAlert className="w-6 h-6" />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }}
+      />
+      <div className="max-w-4xl mx-auto px-4 py-8 sm:py-16">
+        <div className="p-5 sm:p-10 md:p-12 rounded-3xl bg-white border border-slate-200 shadow-xl space-y-6">
+          <div className="flex items-center gap-3">
+            <div className="p-3 rounded-2xl bg-amber-100 text-amber-600 border border-amber-300 shadow-2xs">
+              <ShieldAlert className="w-8 h-8" />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-[1.2]">
+                Satire &amp; Entertainment Disclaimer
+              </h1>
+              <p className="text-sm text-slate-600 font-medium mt-1">
+                Please read carefully: Dil pe mat lena, sirf timepass hai!
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl sm:text-4xl font-black text-white">
-              Satire & Entertainment Disclaimer
-            </h1>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Please read carefully: Dil pe mat lena, sirf timepass hai!
-            </p>
-          </div>
-        </div>
 
-        <div className="space-y-4 text-xs sm:text-sm text-slate-300 leading-relaxed">
-          <div className="p-4 rounded-2xl bg-amber-950/20 border border-amber-500/30 text-amber-200">
-            <strong>Key Principle:</strong> All content, tools, quizzes, scores, meters, roasts, certificates, simulated family WhatsApp chats, and recovery notices on FullTimePass.in are purely satirical works of fictional entertainment.
+          <div className="p-4 sm:p-5 rounded-2xl bg-amber-50 border-2 border-amber-300 text-amber-950 text-base leading-relaxed font-semibold">
+            🚨 <strong>Golden Principle:</strong> All content, tools, questionnaires, scores, meters, certificates, simulated family WhatsApp chats, and recovery notices on FullTimePass.in are purely satirical works of fictional entertainment.
           </div>
 
-          <h3 className="text-base font-bold text-white pt-2">1. Udhaar Recovery Notice</h3>
-          <p>
-            The &ldquo;Udhaar Recovery Notice&rdquo; is a parody document referencing the fictional &ldquo;Reserve Bank of Bhaichara&rdquo;. It is NOT a genuine legal, financial, or government summons. It carries zero legal validity and is intended solely as playful banter between friends.
-          </p>
+          <div className="space-y-6 text-base sm:text-lg text-slate-600 font-normal leading-relaxed">
+            <div>
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-1.5">
+                1. Udhaar Recovery Notice (Reserve Bank of Bhaichara)
+              </h3>
+              <p className="text-sm sm:text-base">
+                The &ldquo;Udhaar Recovery Notice&rdquo; is a parody document referencing the fictional &ldquo;Reserve Bank of Bhaichara (RBB)&rdquo;. It is NOT a genuine legal summons, debt collection warrant, or court order. It carries zero legal or financial validity and is intended solely as playful banter between friends.
+              </p>
+            </div>
 
-          <h3 className="text-base font-bold text-white pt-2">2. Relationship & Red Flag Meters</h3>
-          <p>
-            The &ldquo;GF/BF Red Flag Meter&rdquo; and &ldquo;Ex Yaad Aa Rahi Hai Meter&rdquo; calculate entertainment-only comedic scores using predefined humor templates. They are NOT professional psychological evaluations, relationship counseling, or genuine assessments of any person&apos;s character or moral standing.
-          </p>
+            <div>
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-1.5">
+                2. GF/BF Red Flag Meter &amp; Ex Yaad Meter
+              </h3>
+              <p className="text-sm sm:text-base">
+                The &ldquo;GF/BF Red Flag Meter&rdquo; and &ldquo;Ex Yaad Aa Rahi Hai Meter&rdquo; calculate comedic scores using humorous randomized templates. They are NOT professional psychiatric assessments, clinical psychological evaluations, or genuine judgments of any individual&apos;s moral character.
+              </p>
+            </div>
 
-          <h3 className="text-base font-bold text-white pt-2">3. Shaadi Market Value & Aukaat Checker</h3>
-          <p>
-            These tools are satirical parodies poking fun at Indian wedding culture and daily spending habits (like Swiggy orders and tapri chai). They do NOT request sensitive financial information, bank credentials, or tax IDs, and strictly avoid demeaning individuals based on gender, appearance, caste, or income.
-          </p>
+            <div>
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-1.5">
+                3. Shaadi Market Value &amp; Aukaat Checker
+              </h3>
+              <p className="text-sm sm:text-base">
+                These tools are humorous parodies poking fun at Indian wedding culture and daily spending quirks (like midnight Swiggy cravings and tapri cutting chai). They do NOT request real bank details, tax records, or passwords, and strictly avoid demeaning individuals based on caste, gender, appearance, or economic status.
+              </p>
+            </div>
 
-          <h3 className="text-base font-bold text-white pt-2">4. Fake Family WhatsApp Chat</h3>
-          <p>
-            The chat simulator generates original fictional parody dialog. It is not affiliated with or endorsed by WhatsApp LLC or Meta Platforms Inc., and does not impersonate any real individual.
-          </p>
+            <div>
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-1.5">
+                4. Fake Family WhatsApp Chat Simulator
+              </h3>
+              <p className="text-sm sm:text-base">
+                The chat simulator generates original fictional parody dialog. It is not affiliated with, endorsed by, or sponsored by WhatsApp LLC or Meta Platforms Inc., and does not impersonate any real living person.
+              </p>
+            </div>
 
-          <h3 className="text-base font-bold text-white pt-2">5. Playful Roasting Conduct</h3>
-          <p>
-            Roasts are generated for friendly banter. We do not encourage harassment, hate speech, bullying, or discrimination. Use the tools responsibly and bring smiles to your friends.
-          </p>
-        </div>
+            <div>
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-1.5">
+                5. Responsible Sharing &amp; Anti-Bullying Etiquette
+              </h3>
+              <p className="text-sm sm:text-base">
+                Roasts and parody notices are created for good-natured laughs between consenting friends. We strictly condemn harassment, hate speech, cyber-bullying, and intimidation. If someone asks you not to share a parody card about them, please respect their feelings.
+              </p>
+            </div>
+          </div>
 
-        <div className="pt-6 border-t border-slate-800">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-orange-400 hover:text-orange-300"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back to Home</span>
-          </Link>
+          <div className="pt-6 border-t border-slate-200 flex items-center justify-between">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-amber-700 hover:text-amber-800 transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to Home</span>
+            </Link>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

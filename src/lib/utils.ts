@@ -50,3 +50,25 @@ export async function copyToClipboard(text: string): Promise<boolean> {
     return false;
   }
 }
+
+/**
+ * Universal cross-platform WhatsApp sharing helper.
+ * - On desktop: routes to web.whatsapp.com/send which opens WhatsApp Web or prompts the desktop app directly,
+ *   bypassing the api.whatsapp.com intermediate landing page bug that breaks UTF-8 emojis into replacement characters ().
+ * - On mobile: routes to api.whatsapp.com/send which directly triggers the native mobile WhatsApp app via OS intent.
+ */
+export function openWhatsAppShare(text: string): void {
+  if (typeof window === "undefined") return;
+
+  const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent || ""
+  );
+
+  const encodedText = encodeURIComponent(text);
+  const targetUrl = isMobile
+    ? `https://api.whatsapp.com/send?text=${encodedText}`
+    : `https://web.whatsapp.com/send?text=${encodedText}`;
+
+  window.open(targetUrl, "_blank", "noopener,noreferrer");
+}
+

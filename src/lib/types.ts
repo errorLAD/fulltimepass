@@ -1,4 +1,4 @@
-export type ToolCategory = 'Friends' | 'Relationship' | 'Personality' | 'Money' | 'Shaadi';
+export type ToolCategory = 'Friends' | 'Relationships' | 'Personality' | 'Money' | 'Random Fun' | 'Relationship' | 'Shaadi';
 
 export interface ToolDefinition {
   id: string;
@@ -13,6 +13,10 @@ export interface ToolDefinition {
   badge?: string;
   displayOrder: number;
   featured?: boolean;
+  titleEn?: string;
+  taglineEn?: string;
+  descriptionEn?: string;
+  badgeEn?: string;
 }
 
 export interface QuestionOption {

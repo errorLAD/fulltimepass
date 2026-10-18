@@ -19,6 +19,11 @@ export async function POST(req: NextRequest) {
 
     const { toolSlug, eventType, meta } = parsed.data;
 
+    // Gracefully handle deployment without database configured
+    if (!process.env.DATABASE_URL) {
+      return NextResponse.json({ success: true, offline: true });
+    }
+
     try {
       const tool = await prisma.tool.findUnique({
         where: { slug: toolSlug },

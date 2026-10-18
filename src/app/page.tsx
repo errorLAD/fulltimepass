@@ -4,32 +4,31 @@ import React, { useState } from "react";
 import Link from "next/link";
 import {
   Sparkles,
-  Flame,
   ArrowRight,
   Shuffle,
   Share2,
-  Smile,
-  ShieldCheck,
   CheckCircle,
   Zap,
-  Bomb,
-  Skull,
-  Trophy,
 } from "lucide-react";
-import { TOOLS, CATEGORIES } from "@/lib/data/tools";
+import { getLocalizedTools, getLocalizedCategories } from "@/lib/data/tools";
 import ToolCard from "@/components/shared/ToolCard";
 import BroCodeTicker from "@/components/shared/BroCodeTicker";
 import { ToolCategory } from "@/lib/types";
 import { getRandomItem } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "@/lib/language/LanguageContext";
 
 export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState<ToolCategory | "All">("All");
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
+  const { language, t } = useLanguage();
+
+  const allTools = getLocalizedTools(language);
+  const categories = getLocalizedCategories(language);
 
   // Filter tools
-  const filteredTools = TOOLS.filter((tool) => {
+  const filteredTools = allTools.filter((tool) => {
     const matchesCategory =
       selectedCategory === "All" || tool.category === selectedCategory;
     const matchesSearch =
@@ -40,95 +39,89 @@ export default function HomePage() {
     return matchesCategory && matchesSearch;
   });
 
-  const featuredTools = TOOLS.filter((t) => t.featured);
+  const featuredTools = allTools.filter((t) => t.featured);
 
   const handleRandomPick = () => {
-    const random = getRandomItem(TOOLS);
+    const random = getRandomItem(allTools);
     router.push(`/${random.slug}`);
   };
 
   return (
-    <div className="space-y-10 sm:space-y-14 pb-16 halftone-pattern">
-      {/* 1. HERO SECTION WITH FUNKY GRAPHICS */}
-      <section className="relative pt-8 sm:pt-12 pb-4 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
-        {/* Floating Tilted Graphic Stickers */}
-        <div className="hidden lg:block absolute top-6 left-6 -rotate-6 animate-floatSlow">
-          <span className="funky-tape text-[10px] py-0.5 px-2">
-            🔥 100% DESI BAKCHODI
-          </span>
-        </div>
-        <div className="hidden lg:block absolute top-8 right-8 rotate-6 animate-floatSlow" style={{ animationDelay: '1.5s' }}>
-          <span className="funky-tape-pink text-[10px] py-0.5 px-2">
-            🍻 DIL PE MAT LENA BRO!
-          </span>
-        </div>
-        <div className="hidden sm:block absolute bottom-2 left-10 rotate-3">
-          <span className="funky-tape-cyan text-[10px] py-0.5 px-2">
-            ⚡ WHATSAPP READY CARDS
-          </span>
-        </div>
-        <div className="hidden sm:block absolute bottom-4 right-12 -rotate-3">
-          <span className="funky-tape-green text-[10px] py-0.5 px-2">
-            💥 ZERO BORING ADVICE
-          </span>
+    <div className="space-y-12 sm:space-y-16 pb-16 ambient-glow">
+      {/* 1. HERO SECTION */}
+      <section className="relative pt-12 sm:pt-20 pb-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
+        {/* Clean Pill Badge */}
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-100/90 border border-amber-300 text-amber-900 text-xs sm:text-sm font-semibold shadow-xs mb-6">
+          <Zap className="w-4 h-4 text-amber-600 fill-amber-500" />
+          <span>{t("hero.badge")}</span>
         </div>
 
-        {/* Comic Pill Badge */}
-        <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-funky-yellow border-2 border-black text-black text-xs font-black shadow-brutal mb-4 uppercase tracking-wider">
-          <Zap className="w-3.5 h-3.5 fill-black text-black" />
-          <span>India&apos;s Desi Timepass Hub & Bro Code HQ</span>
-        </div>
-
-        {/* Scaled-down Sleek Headline */}
-        <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-white max-w-4xl mx-auto leading-[1.1]">
-          Bore ho rahe ho? <br className="hidden sm:inline" />
-          <span className="funky-gradient-text drop-shadow-[0_2px_10px_rgba(255,230,0,0.3)]">
-            Kuch timepass karte hain!
+        {/* Clean Modern Headline */}
+        <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 max-w-4xl mx-auto leading-[1.2]">
+          {t("hero.title1")} <br className="hidden sm:inline" />
+          <span className="funky-gradient-text">
+            {t("hero.title2")}
           </span>
         </h1>
 
-        {/* Scaled-down Subtitle */}
-        <p className="mt-4 text-xs sm:text-sm md:text-base text-slate-300 font-medium max-w-2xl mx-auto leading-relaxed">
-          Savage friend roasts, red-flag meters, group chat cabinets, rishta market values, and recovery warrants built for your squad&apos;s WhatsApp groups.
+        {/* Subtitle */}
+        <p className="mt-5 text-base sm:text-lg md:text-xl text-slate-600 font-normal max-w-2xl mx-auto leading-relaxed">
+          {t("hero.subtitle")}
         </p>
 
         {/* Hero CTAs */}
-        <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 max-w-4xl mx-auto">
+          {/* Treat Kaun Dega? Roulette Button */}
+          <Link
+            href="/treat-roulette"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 transition-all text-center min-h-[44px]"
+          >
+            <span className="text-base">🎡</span>
+            <span>{t("hero.rouletteCta")}</span>
+          </Link>
+
+          {/* Udhaar Recovery Notice Button */}
+          <Link
+            href="/udhaar-recovery-notice"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 transition-all text-center min-h-[44px]"
+          >
+            <span className="text-base">📜</span>
+            <span>{t("hero.udhaarCta")}</span>
+          </Link>
+
+          {/* Explore All 20 Tools Button */}
           <a
             href="#all-tools"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-xs sm:text-sm font-black text-black bg-funky-yellow hover:bg-yellow-300 border-2 border-black shadow-brutal hover:shadow-brutal-hover active:translate-x-0.5 active:translate-y-0.5 transition-all uppercase tracking-wider"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-slate-950 bg-gradient-to-r from-amber-400 to-orange-400 hover:from-amber-300 hover:to-orange-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 transition-all text-center min-h-[44px]"
           >
-            <Sparkles className="w-4 h-4 fill-black" />
-            <span>Explore 10 Timepass Tools</span>
-            <ArrowRight className="w-4 h-4 stroke-[3]" />
+            <Sparkles className="w-4 h-4 fill-slate-950 text-slate-950" />
+            <span>{t("hero.exploreCta")}</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </a>
 
+          {/* Surprise Me Button */}
           <button
             onClick={handleRandomPick}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-5 py-3 rounded-xl text-xs sm:text-sm font-black text-white bg-funky-pink hover:bg-pink-600 border-2 border-black shadow-brutal hover:shadow-brutal-hover active:translate-x-0.5 active:translate-y-0.5 transition-all uppercase tracking-wider cursor-pointer"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-800 bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition-all cursor-pointer text-center min-h-[44px]"
           >
-            <Shuffle className="w-4 h-4" />
-            <span>Surprise Me (Random) 🎲</span>
+            <Shuffle className="w-3.5 h-3.5 text-amber-600" />
+            <span>{t("nav.surpriseMe")}</span>
           </button>
         </div>
 
-        {/* Trust Badges */}
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-          <span className="sticker-badge bg-slate-900 text-funky-yellow text-[10px] py-1 px-2.5">
-            <CheckCircle className="w-3 h-3" />
-            <span>100% Free & No Sign-up</span>
+        {/* Feature Highlights */}
+        <div className="mt-9 flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-sm font-medium text-slate-700">
+          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200 shadow-xs">
+            <CheckCircle className="w-4 h-4 text-emerald-600" />
+            <span>{language === "en" ? "100% Free & No Sign-up" : "100% Free & No Sign-up"}</span>
           </span>
-          <span className="sticker-badge bg-slate-900 text-funky-pink text-[10px] py-1 px-2.5">
-            <Bomb className="w-3 h-3" />
-            <span>Downloadable PNG Cards</span>
+          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200 shadow-xs">
+            <Share2 className="w-4 h-4 text-pink-600" />
+            <span>{language === "en" ? "1-Click Instant Share" : "1-Click WhatsApp Share"}</span>
           </span>
-          <span className="sticker-badge bg-slate-900 text-funky-neonGreen text-[10px] py-1 px-2.5">
-            <Share2 className="w-3 h-3" />
-            <span>1-Click WhatsApp Share</span>
-          </span>
-          <span className="sticker-badge bg-slate-900 text-funky-cyan text-[10px] py-1 px-2.5">
-            <ShieldCheck className="w-3 h-3" />
-            <span>Zero Annoying Popups</span>
+          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200 shadow-xs">
+            <Sparkles className="w-4 h-4 text-amber-600" />
+            <span>{language === "en" ? "Downloadable PNG Cards" : "Downloadable PNG Cards"}</span>
           </span>
         </div>
       </section>
@@ -138,26 +131,26 @@ export default function HomePage() {
 
       {/* 3. FEATURED TOOLS SECTION */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 mb-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
           <div>
-            <div className="inline-block funky-tape-pink text-[9px] py-0.5 px-2 mb-1">
-              VIRAL ON REELS & WHATSAPP
-            </div>
-            <h2 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight flex items-center gap-2">
+            <span className="text-xs font-bold text-amber-700 uppercase tracking-wider">
+              {language === "en" ? "Viral on Socials & WhatsApp" : "Viral on WhatsApp & Reels"}
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2 mt-1">
               <span>🔥</span>
-              <span>Trending Right Now</span>
+              <span>{language === "en" ? "Trending Right Now" : "Trending Right Now"}</span>
             </h2>
           </div>
           <a
             href="#all-tools"
-            className="text-xs font-black text-funky-yellow hover:text-yellow-300 flex items-center gap-1 uppercase tracking-wider"
+            className="text-sm font-semibold text-slate-600 hover:text-amber-600 flex items-center gap-1.5 transition-colors"
           >
-            <span>View All 10 Tools</span>
-            <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
+            <span>{language === "en" ? "View All 20 Tools" : "View All 20 Tools"}</span>
+            <ArrowRight className="w-4 h-4" />
           </a>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {featuredTools.map((tool) => (
             <ToolCard key={tool.id} tool={tool} />
           ))}
@@ -166,49 +159,49 @@ export default function HomePage() {
 
       {/* 4. POPULAR CATEGORIES & SEARCH */}
       <section id="categories" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="p-5 sm:p-6 rounded-2xl bg-slate-950 border-3 border-black shadow-brutal">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
+        <div className="p-6 sm:p-7 rounded-3xl bg-white border border-slate-200 shadow-xs">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
             <div>
-              <div className="funky-tape text-[9px] py-0.5 px-2 mb-1">
-                FILTER BY VIBE
-              </div>
-              <h3 className="text-lg sm:text-xl font-black text-white uppercase">
-                Categories & Squad Mood
+              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                {language === "en" ? "Filter By Vibe" : "Filter By Vibe"}
+              </span>
+              <h3 className="text-xl font-bold text-slate-900 mt-0.5">
+                {language === "en" ? "Categories & Squad Mood" : "Categories & Squad Mood"}
               </h3>
             </div>
 
             {/* Quick search input */}
-            <div className="w-full md:w-72">
+            <div className="w-full md:w-80">
               <input
                 type="text"
-                placeholder="Search tools (roast, ex, aukaat)..."
+                placeholder={t("filter.searchPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-3.5 py-2 rounded-xl bg-slate-900 border-2 border-black text-xs font-bold text-white placeholder-slate-500 focus:outline-none focus:border-funky-yellow shadow-brutal"
+                className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm font-normal text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500 focus:bg-white transition-colors"
               />
             </div>
           </div>
 
-          {/* Neo-brutalist Category Pills */}
-          <div className="flex flex-wrap gap-2">
+          {/* Clean Category Pills */}
+          <div className="flex flex-wrap gap-2.5">
             <button
               onClick={() => setSelectedCategory("All")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all border-2 border-black cursor-pointer ${
+              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
                 selectedCategory === "All"
-                  ? "bg-funky-yellow text-black shadow-brutal"
-                  : "bg-slate-900 text-slate-300 hover:bg-slate-800"
+                  ? "bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 shadow-xs font-bold"
+                  : "bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200"
               }`}
             >
-              ⚡ All 10 Tools
+              ⚡ {language === "en" ? "All 20 Tools" : "All 20 Tools"}
             </button>
-            {CATEGORIES.map((cat) => (
+            {categories.map((cat) => (
               <button
                 key={cat.label}
                 onClick={() => setSelectedCategory(cat.label)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 border-2 border-black cursor-pointer ${
+                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
                   selectedCategory === cat.label
-                    ? "bg-funky-pink text-white shadow-brutal"
-                    : "bg-slate-900 text-slate-300 hover:bg-slate-800"
+                    ? "bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 shadow-xs font-bold"
+                    : "bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200"
                 }`}
               >
                 <span>{cat.emoji}</span>
@@ -219,40 +212,43 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. ALL 10 TIMEPASS TOOLS GRID */}
+      {/* 5. ALL 20 TIMEPASS TOOLS GRID */}
       <section id="all-tools" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-6">
-          <div className="funky-tape-cyan text-[9px] py-0.5 px-2 mb-1">
-            THE COMPLETE TIMEPASS ARSENAL
-          </div>
-          <h2 className="text-xl sm:text-3xl font-black text-white uppercase tracking-tight">
-            All 10 Timepass Tools ({filteredTools.length})
+        <div className="mb-7">
+          <span className="text-xs font-bold text-amber-700 uppercase tracking-wider">
+            {language === "en" ? "The Complete Comedy Arsenal" : "The Complete Timepass Arsenal"}
+          </span>
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-1">
+            {language === "en" ? `All 20 Tools (${filteredTools.length})` : `All 20 Timepass Tools (${filteredTools.length})`}
           </h2>
-          <p className="text-xs text-slate-400 font-medium mt-0.5">
-            Pick a tool, answer funny dilemmas, get an aesthetic card, and fire away on WhatsApp!
+          <p className="text-sm sm:text-base text-slate-600 font-normal mt-2 leading-relaxed">
+            {language === "en"
+              ? "Pick a tool, answer funny dilemmas, get an aesthetic card, and fire away with your squad!"
+              : "Pick a tool, answer funny dilemmas, get an aesthetic card, and fire away on WhatsApp!"}
           </p>
         </div>
 
         {filteredTools.length === 0 ? (
-          <div className="text-center py-12 p-6 rounded-2xl bg-slate-950 border-3 border-black shadow-brutal">
-            <p className="text-lg font-black text-funky-yellow">
-              Koi tool nahi mila dost! 🤷‍♂️
-            </p>
-            <p className="text-xs text-slate-400 font-medium mt-1">
-              Search term change karo ya category reset karo.
+          <div className="text-center py-16 px-4 bg-white rounded-3xl border border-slate-200 shadow-sm">
+            <p className="text-4xl mb-3">🧐</p>
+            <h3 className="text-lg font-bold text-slate-900 mb-1">
+              {t("filter.noResults")}
+            </h3>
+            <p className="text-sm text-slate-600 mb-5">
+              {language === "en" ? "Change your search term or reset the category filter." : "Search term change karo ya category reset karo."}
             </p>
             <button
               onClick={() => {
                 setSelectedCategory("All");
                 setSearchQuery("");
               }}
-              className="mt-3 px-4 py-2 rounded-xl text-xs font-black bg-funky-yellow text-black border-2 border-black shadow-brutal uppercase"
+              className="px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-950 bg-amber-400 hover:bg-amber-300 cursor-pointer"
             >
-              Reset Filters
+              {language === "en" ? "Reset Filters" : "Reset Filters"}
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredTools.map((tool) => (
               <ToolCard key={tool.id} tool={tool} />
             ))}
@@ -260,53 +256,59 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* 6. HOW IT WORKS COMIC STRIP */}
+      {/* 6. HOW IT WORKS */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="p-6 sm:p-8 rounded-3xl bg-slate-950 border-3 border-black shadow-brutal text-center relative overflow-hidden">
-          <div className="funky-tape text-[9px] py-0.5 px-2 mb-1.5">
-            3 SIMPLE STEPS
-          </div>
-          <h2 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight mb-6">
-            How FullTimePass Works
+        <div className="p-7 sm:p-10 rounded-3xl bg-white border border-slate-200 text-center relative overflow-hidden shadow-xs">
+          <span className="text-xs font-bold text-amber-700 uppercase tracking-wider">
+            {language === "en" ? "3 Simple Steps" : "3 Simple Steps"}
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-8 mt-1.5">
+            {language === "en" ? "How FullTimePass Works" : "How FullTimePass Works"}
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
             {/* Step 1 */}
-            <div className="p-4 rounded-xl bg-slate-900 border-2 border-black shadow-brutal relative">
-              <span className="w-8 h-8 rounded-lg bg-funky-yellow text-black font-black text-sm border-2 border-black flex items-center justify-center mb-3 shadow-brutal">
+            <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200">
+              <span className="w-9 h-9 rounded-xl bg-amber-400 text-slate-950 font-bold text-base flex items-center justify-center mb-4 shadow-xs">
                 1
               </span>
-              <h3 className="text-sm font-black text-white mb-1 uppercase">
-                Pick Your Weapon
+              <h3 className="text-base font-bold text-slate-900 mb-2">
+                {language === "en" ? "Pick Your Tool" : "Pick Your Weapon"}
               </h3>
-              <p className="text-xs text-slate-300 font-normal leading-relaxed">
-                Choose from 10 tools: roast a friend, check your moving-on score, predict wedding kalesh, or issue an udhaar recovery notice.
+              <p className="text-sm text-slate-600 leading-relaxed font-normal">
+                {language === "en"
+                  ? "Choose from 20 tools: roast a friend, check your moving-on score, spin the treat roulette, or issue an official debt recovery notice."
+                  : "Choose from 20 tools: roast a friend, check your moving-on score, spin the treat roulette, or issue an udhaar recovery notice."}
               </p>
             </div>
 
             {/* Step 2 */}
-            <div className="p-4 rounded-xl bg-slate-900 border-2 border-black shadow-brutal relative">
-              <span className="w-8 h-8 rounded-lg bg-funky-pink text-white font-black text-sm border-2 border-black flex items-center justify-center mb-3 shadow-brutal">
+            <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200">
+              <span className="w-9 h-9 rounded-xl bg-rose-500 text-white font-bold text-base flex items-center justify-center mb-4 shadow-xs">
                 2
               </span>
-              <h3 className="text-sm font-black text-white mb-1 uppercase">
-                Answer Funny Dilemmas
+              <h3 className="text-base font-bold text-slate-900 mb-2">
+                {language === "en" ? "Answer Funny Dilemmas" : "Answer Funny Dilemmas"}
               </h3>
-              <p className="text-xs text-slate-300 font-normal leading-relaxed">
-                Enter your friend&apos;s nickname or pick from hilarious Indian multiple-choice situations about late replies, Swiggy orders, and chai debates.
+              <p className="text-sm text-slate-600 leading-relaxed font-normal">
+                {language === "en"
+                  ? "Enter your friend's name or choose from hilarious relatable situations about delayed replies, coffee addictions, and procrastination."
+                  : "Enter your friend's nickname or pick from hilarious Indian multiple-choice situations about late replies, Swiggy orders, and chai debates."}
               </p>
             </div>
 
             {/* Step 3 */}
-            <div className="p-4 rounded-xl bg-slate-900 border-2 border-black shadow-brutal relative">
-              <span className="w-8 h-8 rounded-lg bg-funky-neonGreen text-black font-black text-sm border-2 border-black flex items-center justify-center mb-3 shadow-brutal">
+            <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200">
+              <span className="w-9 h-9 rounded-xl bg-emerald-500 text-white font-bold text-base flex items-center justify-center mb-4 shadow-xs">
                 3
               </span>
-              <h3 className="text-sm font-black text-white mb-1 uppercase">
-                Blast on WhatsApp
+              <h3 className="text-base font-bold text-slate-900 mb-2">
+                {language === "en" ? "Share the Laughs" : "Blast on WhatsApp"}
               </h3>
-              <p className="text-xs text-slate-300 font-normal leading-relaxed">
-                Get an instant, high-resolution aesthetic result card. Download as PNG with one click or blast it directly into your squad&apos;s WhatsApp groups!
+              <p className="text-sm text-slate-600 leading-relaxed font-normal">
+                {language === "en"
+                  ? "Get an instant, high-resolution aesthetic result card. Download as PNG with one click or share it directly into your squad group chats!"
+                  : "Get an instant, high-resolution aesthetic result card. Download as PNG with one click or blast it directly into your squad's WhatsApp groups!"}
               </p>
             </div>
           </div>

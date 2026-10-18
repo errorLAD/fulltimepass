@@ -2,8 +2,9 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, CheckCircle2, Sparkles, Zap } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
 import { QuizQuestion, QuestionOption } from "@/lib/types";
+import { useLanguage } from "@/lib/language/LanguageContext";
 
 interface QuizRunnerProps {
   questions: QuizQuestion[];
@@ -20,13 +21,14 @@ export default function QuizRunner({
   onComplete,
   accentColor = "from-funky-yellow to-funky-pink",
 }: QuizRunnerProps) {
+  const { language, t } = useLanguage();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<
     { questionId: string; selectedOption: QuestionOption }[]
   >([]);
   const [selectedOption, setSelectedOption] = useState<QuestionOption | null>(null);
 
-  const currentQ = questions[currentIndex];
+  const currentQ = questions[currentIndex] || questions[0];
   const progressPercent = Math.round(((currentIndex + 1) / questions.length) * 100);
 
   const handleSelectOption = (option: QuestionOption) => {
@@ -64,27 +66,43 @@ export default function QuizRunner({
     }
   };
 
+  const nextLabel =
+    currentIndex + 1 === questions.length
+      ? language === "en"
+        ? "Reveal Result 🎉"
+        : "Asli Result Dekho 🎯"
+      : language === "en"
+      ? "Next Question"
+      : "Agla Sawaal";
+
+  const dilemmaLabel =
+    language === "en"
+      ? `Question #${currentIndex + 1}`
+      : `Dilemma #${currentIndex + 1}`;
+
+  const backLabel = language === "en" ? "Back" : "Peechhe";
+
   return (
     <div className="w-full max-w-2xl mx-auto space-y-6">
-      {/* Funky Progress Bar */}
+      {/* Progress Bar */}
       <div className="space-y-2">
-        <div className="flex items-center justify-between text-xs font-black uppercase tracking-wider">
-          <span className="funky-tape text-[10px]">
+        <div className="flex items-center justify-between text-xs font-semibold">
+          <span className="text-amber-700 font-bold uppercase tracking-wider text-[11px]">
             {toolTitle}
           </span>
-          <span className="text-funky-yellow font-black px-2 py-0.5 bg-black border border-slate-800 rounded">
-            Question {currentIndex + 1} / {questions.length} ({progressPercent}%)
+          <span className="text-slate-500 font-mono text-[11px]">
+            {t("quiz.question", "Question")} {currentIndex + 1} {t("quiz.of", "of")} {questions.length} ({progressPercent}%)
           </span>
         </div>
-        <div className="w-full h-3 rounded-full bg-slate-900 border-2 border-black overflow-hidden shadow-brutal">
+        <div className="w-full h-2 rounded-full bg-slate-200 border border-slate-300 overflow-hidden">
           <div
-            className={`h-full bg-gradient-to-r ${accentColor} transition-all duration-300 ease-out`}
+            className={`h-full bg-gradient-to-r from-amber-400 to-orange-500 transition-all duration-300 ease-out`}
             style={{ width: `${progressPercent}%` }}
           />
         </div>
       </div>
 
-      {/* Animated Comic Question Card */}
+      {/* Animated Question Card */}
       <AnimatePresence mode="wait">
         <motion.div
           key={currentIndex}
@@ -92,26 +110,26 @@ export default function QuizRunner({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.98, y: -10 }}
           transition={{ duration: 0.2 }}
-          className="rounded-3xl p-6 sm:p-8 bg-slate-950 border-4 border-black shadow-brutal-lg"
+          className="rounded-3xl p-4 sm:p-8 bg-white border border-slate-200 shadow-xl"
         >
           {/* Question Text */}
-          <div className="mb-6">
-            <span className="inline-block text-[10px] font-black uppercase tracking-widest text-black bg-funky-neonGreen border border-black px-2 py-0.5 rounded shadow-brutal mb-2">
-              DILEMMA #{currentIndex + 1}
+          <div className="mb-7">
+            <span className="inline-block text-xs font-semibold uppercase tracking-wider text-amber-900 bg-amber-100/90 border border-amber-300 px-3 py-1 rounded-full mb-3">
+              {dilemmaLabel}
             </span>
-            <h2 className="text-xl sm:text-2xl font-black text-white leading-snug">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 leading-snug tracking-tight">
               {currentQ.question}
             </h2>
             {currentQ.hint && (
-              <p className="text-xs text-funky-yellow font-bold mt-2 flex items-center gap-1.5 italic">
-                <Sparkles className="w-3.5 h-3.5 text-funky-yellow shrink-0 fill-funky-yellow" />
+              <p className="text-sm text-amber-800 font-medium mt-3 flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-amber-600 shrink-0 fill-amber-500" />
                 <span>{currentQ.hint}</span>
               </p>
             )}
           </div>
 
           {/* Options */}
-          <div className="space-y-3 mb-8">
+          <div className="space-y-3.5 mb-8">
             {currentQ.options.map((option, idx) => {
               const isSelected = selectedOption?.text === option.text;
               return (
@@ -119,39 +137,39 @@ export default function QuizRunner({
                   key={idx}
                   type="button"
                   onClick={() => handleSelectOption(option)}
-                  className={`w-full text-left p-4 rounded-2xl border-3 transition-all duration-150 flex items-start justify-between gap-4 cursor-pointer ${
+                  className={`w-full text-left p-3.5 sm:p-5 min-h-[52px] rounded-2xl border transition-all duration-150 flex items-start justify-between gap-3 sm:gap-4 cursor-pointer ${
                     isSelected
-                      ? "bg-funky-yellow border-black text-black shadow-brutal translate-x-[-2px] translate-y-[-2px]"
-                      : "bg-slate-900/90 border-black hover:border-funky-yellow text-white hover:bg-slate-900 shadow-brutal"
+                      ? "bg-amber-400 border-amber-500 text-slate-950 font-bold shadow-md"
+                      : "bg-slate-50 border-slate-200 hover:border-slate-300 text-slate-800 hover:bg-slate-100"
                   }`}
                 >
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-start gap-3 sm:gap-3.5">
                     <span
-                      className={`w-7 h-7 rounded-lg text-xs font-black flex items-center justify-center shrink-0 mt-0.5 border-2 border-black ${
+                      className={`w-7 h-7 rounded-xl text-xs font-bold flex items-center justify-center shrink-0 mt-0.5 border ${
                         isSelected
-                          ? "bg-black text-funky-yellow"
-                          : "bg-black text-white"
+                          ? "bg-slate-950 text-amber-400 border-slate-950"
+                          : "bg-white text-slate-700 border-slate-300 shadow-xs"
                       }`}
                     >
                       {String.fromCharCode(65 + idx)}
                     </span>
                     <div>
-                      <p className="text-sm sm:text-base font-black leading-snug">
+                      <p className="text-base sm:text-lg font-semibold leading-relaxed">
                         {option.text}
                       </p>
                       {option.subtext && (
-                        <p className={`text-xs mt-0.5 font-bold ${isSelected ? "text-black/80" : "text-slate-400"}`}>
+                        <p className={`text-sm mt-1 leading-relaxed ${isSelected ? "text-slate-950/80 font-medium" : "text-slate-500 font-normal"}`}>
                           {option.subtext}
                         </p>
                       )}
                     </div>
                   </div>
 
-                  <div className="shrink-0 mt-0.5">
+                  <div className="shrink-0 mt-1">
                     {isSelected ? (
-                      <CheckCircle2 className="w-6 h-6 text-black fill-black" />
+                      <CheckCircle2 className="w-5 h-5 text-slate-950 fill-slate-950" />
                     ) : (
-                      <div className="w-6 h-6 rounded-full border-2 border-slate-700 bg-slate-950" />
+                      <div className="w-5 h-5 rounded-full border-2 border-slate-300 bg-white" />
                     )}
                   </div>
                 </button>
@@ -160,27 +178,25 @@ export default function QuizRunner({
           </div>
 
           {/* Navigation Controls */}
-          <div className="flex items-center justify-between pt-4 border-t-2 border-dashed border-slate-800">
+          <div className="flex items-center justify-between pt-4 border-t border-slate-200">
             <button
               type="button"
               onClick={handlePrev}
               disabled={currentIndex === 0}
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-black uppercase text-slate-400 hover:text-white bg-slate-900 border border-slate-800 hover:border-slate-700 disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
+              className="min-h-[44px] inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 hover:bg-slate-50 shadow-xs disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4" />
-              <span>Back</span>
+              <span>{backLabel}</span>
             </button>
 
             <button
               type="button"
               onClick={handleNext}
               disabled={!selectedOption}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wider text-black bg-funky-yellow hover:bg-yellow-300 border-3 border-black shadow-brutal active:translate-x-1 active:translate-y-1 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+              className="min-h-[44px] inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-slate-950 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 shadow-xs transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
             >
-              <span>
-                {currentIndex + 1 === questions.length ? "Reveal Result 🎉" : "Next Dilemma"}
-              </span>
-              <ArrowRight className="w-4 h-4 stroke-[3]" />
+              <span>{nextLabel}</span>
+              <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </motion.div>

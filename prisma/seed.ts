@@ -9,7 +9,8 @@ import {
   KALESH_QUESTIONS,
   PERSONALITY_RESULTS,
   ROAST_STYLES,
-  CHAT_ROLES_POOL
+  CHAT_ROLES_POOL,
+  MAIN_CHARACTER_QUESTIONS,
 } from "../src/lib/data/toolData";
 
 const prisma = new PrismaClient();
@@ -127,10 +128,23 @@ async function main() {
           },
         });
       }
+    } else if (t.slug === "main-character-syndrome") {
+      await prisma.question.deleteMany({ where: { toolId: tool.id } });
+      for (let i = 0; i < MAIN_CHARACTER_QUESTIONS.length; i++) {
+        const q = MAIN_CHARACTER_QUESTIONS[i];
+        await prisma.question.create({
+          data: {
+            toolId: tool.id,
+            questionText: q.question,
+            displayOrder: i + 1,
+            answerOptions: q.options,
+          },
+        });
+      }
     }
   }
 
-  console.log("Seeding complete! 10 tools and templates loaded successfully.");
+  console.log("Seeding complete! All 20 tools and templates loaded successfully.");
 }
 
 main()

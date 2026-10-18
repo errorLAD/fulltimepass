@@ -25,6 +25,7 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+        display: ["var(--font-display)", "system-ui", "-apple-system", "sans-serif"],
       },
       keyframes: {
         marquee: {

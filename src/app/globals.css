@@ -1,18 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: #090c17;
-  --foreground: #f8fafc;
+  --background: #f8fafc;
+  --foreground: #1e293b;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
 }
 
 @layer base {
-  body {
-    background-color: #080a14;
-    color: #f8fafc;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  html {
+    scroll-behavior: smooth;
     overflow-x: hidden;
+    max-width: 100vw;
+  }
+
+  body {
+    background-color: #f8fafc;
+    color: #1e293b;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.65;
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
+  /* Prevent iOS Safari auto-zoom on inputs */
+  @media screen and (max-width: 768px) {
+    input, select, textarea {
+      font-size: 16px !important;
+    }
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  p {
+    line-height: 1.7;
+    color: #334155;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: var(--font-display);
+    color: #0f172a;
+    letter-spacing: -0.025em;
+    line-height: 1.25;
   }
 }
 
@@ -22,104 +62,138 @@
   height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #0b0e1b;
-  border-left: 2px solid #000;
+  background: #f1f5f9;
+  border-left: 1px solid #e2e8f0;
 }
 ::-webkit-scrollbar-thumb {
-  background: #FFE600;
-  border: 2px solid #000;
-  border-radius: 4px;
+  background: #f59e0b;
+  border: 2px solid #ffffff;
+  border-radius: 6px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #FF007A;
+  background: #ea580c;
 }
 
-/* Comic / Halftone Dot Matrix Background */
+/* Clean Subtle Dot Grid & Ambient Glow for Light Mode */
+.ambient-glow {
+  background: radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.08) 0%, rgba(244, 63, 94, 0.04) 35%, transparent 70%);
+}
+
+.subtle-dots {
+  background-image: radial-gradient(rgba(148, 163, 184, 0.3) 1.2px, transparent 1.2px);
+  background-size: 24px 24px;
+}
+
 .halftone-pattern {
-  background-image: radial-gradient(rgba(255, 230, 0, 0.14) 1.5px, transparent 0);
-  background-size: 20px 20px;
+  background-image: radial-gradient(rgba(148, 163, 184, 0.22) 1.2px, transparent 1.2px);
+  background-size: 24px 24px;
 }
 
-.desi-grid-dense {
-  background-size: 32px 32px;
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+/* Modern Sleek Tool Card - Crisp White with Cool Shadows */
+.tool-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.25rem;
+  box-shadow: 0 4px 14px -3px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Funky Tape Strip Effect */
+.tool-card:hover {
+  transform: translateY(-4px);
+  border-color: #f59e0b;
+  box-shadow: 0 20px 32px -8px rgba(15, 23, 42, 0.09), 0 0 24px -4px rgba(245, 158, 11, 0.2);
+  background: #ffffff;
+}
+
+/* Backward compatibility for comic-card with sleek finish */
+.comic-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.25rem;
+  box-shadow: 0 4px 14px -3px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.comic-card:hover {
+  transform: translateY(-4px);
+  border-color: #f59e0b;
+  box-shadow: 0 20px 32px -8px rgba(15, 23, 42, 0.09), 0 0 24px -4px rgba(245, 158, 11, 0.2);
+  background: #ffffff;
+}
+
+/* Clean Pill Badge */
+.clean-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 11px;
+  border-radius: 9999px;
+  padding: 4px 12px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  transition: all 0.2s ease;
+}
+
+.clean-badge:hover {
+  border-color: #f59e0b;
+  color: #d97706;
+}
+
+/* Subtle Tape Strip Effect */
 .funky-tape {
-  background: #FFE600;
-  color: #000;
-  font-weight: 900;
+  background: #fef08a;
+  color: #713f12;
+  font-weight: 800;
   text-transform: uppercase;
   font-size: 11px;
-  letter-spacing: 0.1em;
-  padding: 3px 12px;
-  border: 2px solid #000;
-  box-shadow: 2px 2px 0px #000;
+  letter-spacing: 0.05em;
+  padding: 2px 10px;
+  border-radius: 6px;
   display: inline-block;
   user-select: none;
+  border: 1px solid #fde047;
 }
 
 .funky-tape-pink {
-  background: #FF007A;
-  color: #fff;
-  border: 2px solid #000;
-  box-shadow: 2px 2px 0px #000;
+  background: #ffe4e6;
+  color: #9f1239;
+  border: 1px solid #fecdd3;
+  border-radius: 6px;
 }
 
 .funky-tape-cyan {
-  background: #00E5FF;
-  color: #000;
-  border: 2px solid #000;
-  box-shadow: 2px 2px 0px #000;
+  background: #e0f2fe;
+  color: #075985;
+  border: 1px solid #bae6fd;
+  border-radius: 6px;
 }
 
 .funky-tape-green {
-  background: #00F59B;
-  color: #000;
-  border: 2px solid #000;
-  box-shadow: 2px 2px 0px #000;
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
 }
 
-/* Neo-Brutalist Sticker Badge */
 .sticker-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-weight: 900;
-  text-transform: uppercase;
+  font-weight: 800;
   font-size: 11px;
-  border: 2px solid #000;
-  box-shadow: 3px 3px 0px #000;
   border-radius: 9999px;
-  padding: 4px 12px;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  padding: 3px 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #1e293b;
+  transition: all 0.2s ease;
 }
 
-.sticker-badge:hover {
-  transform: translateY(-2px) rotate(-1deg);
-  box-shadow: 5px 5px 0px #000;
-}
-
-/* Comic Bubble Corner */
-.comic-card {
-  background: #111628;
-  border: 3px solid #000;
-  box-shadow: 6px 6px 0px 0px #000;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.comic-card:hover {
-  transform: translate(-3px, -3px);
-  box-shadow: 10px 10px 0px 0px #FFE600;
-  border-color: #000;
-}
-
-/* Gradient Text */
+/* Modern Vibrant Gradient Text for Light Mode */
 .funky-gradient-text {
-  background: linear-gradient(135deg, #FFE600 0%, #FF007A 50%, #00E5FF 100%);
+  background: linear-gradient(135deg, #d97706 0%, #ea580c 50%, #e11d48 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
