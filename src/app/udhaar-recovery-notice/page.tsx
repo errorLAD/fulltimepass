@@ -10,6 +10,7 @@ import { trackToolEvent } from "@/lib/analytics";
 import { getUdhaarPunchlines } from "@/lib/data/toolDataHelper";
 import { udhaarSoundEngine } from "@/lib/audio/udhaarAudio";
 import RelatedTools from "@/components/shared/RelatedTools";
+import GameAudioBar from "@/components/audio/GameAudioBar";
 import Link from "next/link";
 import { useLanguage } from "@/lib/language/LanguageContext";
 
@@ -214,56 +215,27 @@ export default function UdhaarRecoveryNoticePage() {
           transition={{ duration: 0.4, ease: "easeOut" }}
           className="max-w-xl mx-auto space-y-6"
         >
-          {/* Hilarious Meme Audio Voiceover Banner */}
-          {currentAnnouncement && (
-            <div className="p-4 sm:p-5 rounded-3xl bg-amber-50/95 border-2 border-amber-300 shadow-sm flex items-start gap-3.5 relative z-10 animate-fade-in">
-              <div
-                className={`w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-400 to-orange-500 text-slate-950 flex items-center justify-center shrink-0 shadow-xs mt-0.5 ${
-                  isPlayingAudio ? "animate-bounce" : ""
-                }`}
-              >
-                <Volume2 className="w-5 h-5 text-slate-950" />
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center justify-between gap-2 mb-1.5">
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
-                    <span>🎙️</span>
-                    <span>{isEn ? "Comedic Audio Announcement" : "Desi Comedy Audio Announcement"}</span>
-                    {isPlayingAudio && (
-                      <span className="inline-flex items-center gap-1 text-[10px] font-extrabold text-emerald-800 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded-full animate-pulse">
-                        Speaking 🔊
-                      </span>
-                    )}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={handleToggleSound}
-                    className="text-xs font-bold text-slate-700 hover:text-slate-950 inline-flex items-center gap-1 cursor-pointer bg-white px-2.5 py-1 rounded-lg border border-amber-200 shadow-2xs hover:bg-slate-50 transition-colors"
-                  >
-                    {soundEnabled ? (
-                      <Volume2 className="w-3.5 h-3.5 text-emerald-600" />
-                    ) : (
-                      <VolumeX className="w-3.5 h-3.5 text-rose-600" />
-                    )}
-                    <span>{soundEnabled ? (isEn ? "Mute" : "Mute") : (isEn ? "Unmute" : "Unmute")}</span>
-                  </button>
-                </div>
-                <p className="text-sm sm:text-base font-bold text-slate-900 leading-snug">
-                  &ldquo;{currentAnnouncement}&rdquo;
-                </p>
-                <div className="mt-2.5 flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={handleReplayAnnouncement}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-extrabold text-slate-900 bg-white hover:bg-amber-100/60 border border-amber-300 transition-colors shadow-2xs cursor-pointer"
-                  >
-                    <RotateCcw className={`w-3.5 h-3.5 text-amber-700 ${isPlayingAudio ? "animate-spin" : ""}`} />
-                    <span>{isEn ? "Play Another Announcement 🎲" : "Play Another Announcement 🎲"}</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
+          {/* Contextual Audio Recovery Warrant */}
+          <GameAudioBar
+            toolSlug="udhaar-recovery-notice"
+            toolTitle={isEn ? "Debt Recovery Notice" : "Udhaar Recovery Notice"}
+            badgeTitle={isEn ? "Defaulter Detected" : "Paise Nikaal Warrant"}
+            targetName={cleanFriendName}
+            customAudioTitle={isEn ? "Suno Recovery Warrant 💰" : "Suno Recovery Warrant 💰"}
+            customAudioSubtitle={
+              isEn
+                ? `Listen to official recovery notice for ${cleanFriendName}`
+                : `${cleanFriendName} ka official udhaar warrant aawaz mein suniye`
+            }
+            description={
+              currentAnnouncement ||
+              (isEn
+                ? `Attention ${cleanFriendName}! You owe ${currencySymbol}${grandTotal}! Stop avoiding messages and settle your debts immediately!`
+                : `Oye ${cleanFriendName}! Tumhare sar par ${currencySymbol}${grandTotal} ka udhaar chada hua hai! Bahane band karo aur foran paise vapas karo!`)
+            }
+            punchline={punchline}
+            language={language}
+          />
 
           {/* THE OFFICIAL PARODY RECOVERY NOTICE CARD */}
           <div

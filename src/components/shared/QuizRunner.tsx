@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
 import { QuizQuestion, QuestionOption } from "@/lib/types";
 import { useLanguage } from "@/lib/language/LanguageContext";
+import QuestionAudioButton from "@/components/audio/QuestionAudioButton";
 
 interface QuizRunnerProps {
   questions: QuizQuestion[];
@@ -114,9 +115,17 @@ export default function QuizRunner({
         >
           {/* Question Text */}
           <div className="mb-7">
-            <span className="inline-block text-xs font-semibold uppercase tracking-wider text-amber-900 bg-amber-100/90 border border-amber-300 px-3 py-1 rounded-full mb-3">
-              {dilemmaLabel}
-            </span>
+            <div className="flex items-center justify-between gap-2 mb-3">
+              <span className="inline-block text-xs font-semibold uppercase tracking-wider text-amber-900 bg-amber-100/90 border border-amber-300 px-3 py-1 rounded-full">
+                {dilemmaLabel}
+              </span>
+              <QuestionAudioButton
+                questionText={currentQ.question}
+                options={currentQ.options}
+                questionIndex={currentIndex}
+                language={language}
+              />
+            </div>
             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 leading-snug tracking-tight">
               {currentQ.question}
             </h2>

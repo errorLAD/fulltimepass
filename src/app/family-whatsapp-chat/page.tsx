@@ -9,6 +9,7 @@ import { getFamilyChatThemes } from "@/lib/data/toolDataHelper";
 import { copyToClipboard, openWhatsAppShare } from "@/lib/utils";
 import { trackToolEvent } from "@/lib/analytics";
 import RelatedTools from "@/components/shared/RelatedTools";
+import GameAudioBar from "@/components/audio/GameAudioBar";
 import Link from "next/link";
 import { useLanguage } from "@/lib/language/LanguageContext";
 
@@ -139,6 +140,23 @@ export default function FamilyWhatsAppChatPage() {
           transition={{ duration: 0.4, ease: "easeOut" }}
           className="max-w-xl mx-auto space-y-6"
         >
+          {/* Contextual Audio Reader */}
+          <GameAudioBar
+            toolSlug="family-whatsapp-chat"
+            toolTitle={isEn ? "Fake Family WhatsApp Chat" : "Fake Family WhatsApp Chat"}
+            badgeTitle={activeTheme.title}
+            customAudioTitle={isEn ? "Suno Family Chat 📱" : "Suno Parivaar Kalesh 📱"}
+            customAudioSubtitle={
+              isEn
+                ? "Listen to dramatic family chat audio in funny voice"
+                : "Papaji aur Mummyji ki kalesh chat aawaz mein suniye"
+            }
+            description={processedMessages
+              .map((m) => `${m.sender}: ${m.text}`)
+              .join(". ... ")}
+            language={language}
+          />
+
           {/* THE ORIGINAL FICTIONAL CHAT INTERFACE - AUTHENTIC WHATSAPP LIGHT MODE */}
           <div
             ref={chatRef}

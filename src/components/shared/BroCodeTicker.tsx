@@ -12,6 +12,7 @@ const BRO_RULES_HI = [
   "RULE #6: Treat ke time washroom mein chhupne wale ko samosa cess lagega 🥟",
   "RULE #7: 'Bas 5 minute mein pahunch raha hoon' means agle janam milenge ⏰",
   "RULE #8: Dost ke phone ka lock khole bina gallery scroll karna illegal hai 📱",
+  "RULE #9: Har result ko Desi Bhai ya Comedy Uncle ki aawaz mein sunna compulsory hai 🎙️",
 ];
 
 const BRO_RULES_EN = [
@@ -23,6 +24,7 @@ const BRO_RULES_EN = [
   "RULE #6: Hiding in the bathroom when the bill drops incurs a mandatory dessert penalty 🍰",
   "RULE #7: 'I'm 5 minutes away' means I haven't crawled out of bed yet ⏰",
   "RULE #8: Borrowing your friend's fast charger without asking is strictly universal law 🔌",
+  "RULE #9: Listening to your results in Comedy Uncle or Desi Bhai voice is squad law 🎙️",
 ];
 
 export default function BroCodeTicker() {

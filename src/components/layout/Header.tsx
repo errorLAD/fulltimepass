@@ -2,15 +2,17 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { Sparkles, Menu, X, Shuffle, Flame } from "lucide-react";
+import { Sparkles, Menu, X, Shuffle, Flame, Radio } from "lucide-react";
 import { TOOLS } from "@/lib/data/tools";
 import { getRandomItem } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/lib/language/LanguageContext";
 import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
+import VoiceDrawerModal from "@/components/audio/VoiceDrawerModal";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [voiceModalOpen, setVoiceModalOpen] = useState(false);
   const router = useRouter();
   const { t, language } = useLanguage();
 
@@ -61,6 +63,16 @@ export default function Header() {
             {/* Language Switcher */}
             <LanguageSwitcher variant="pill" />
 
+            {/* Funny Voices Modal Trigger */}
+            <button
+              onClick={() => setVoiceModalOpen(true)}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-sm font-bold text-amber-950 transition-all cursor-pointer shadow-2xs"
+              title="8 Natural Neural Voices & Sound Effects"
+            >
+              <Radio className="w-4 h-4 text-amber-600 animate-pulse" />
+              <span>{language === "en" ? "Funny Voices 🎙️" : "Funny Aawaz 🎙️"}</span>
+            </button>
+
             {/* Random Tool Button */}
             <button
               onClick={handleRandomTool}
@@ -84,6 +96,16 @@ export default function Header() {
           {/* Mobile Right Controls */}
           <div className="flex items-center gap-2 md:hidden">
             <LanguageSwitcher variant="compact" />
+
+            {/* Mobile Voice Modal Button */}
+            <button
+              onClick={() => setVoiceModalOpen(true)}
+              className="w-9 h-9 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-700 flex items-center justify-center transition-colors cursor-pointer"
+              title="Funny Voices"
+              aria-label="Funny Voices"
+            >
+              <Radio className="w-4 h-4" />
+            </button>
 
             <button
               onClick={handleRandomTool}
@@ -140,6 +162,16 @@ export default function Header() {
             <span>🎲 {t("nav.surpriseMe", "Surprise Me (Random Tool)")}</span>
             <Shuffle className="w-4 h-4" />
           </button>
+          <button
+            onClick={() => {
+              setVoiceModalOpen(true);
+              setMobileMenuOpen(false);
+            }}
+            className="w-full text-left p-3 rounded-xl bg-amber-50 border border-amber-300 text-amber-950 flex items-center justify-between font-bold"
+          >
+            <span>🎙️ {language === "en" ? "Funny Voices & SFX (7 Styles)" : "Funny Aawazein & SFX (7 Styles)"}</span>
+            <Radio className="w-4 h-4 text-amber-600" />
+          </button>
           <div className="pt-2">
             <Link
               href="/#all-tools"
@@ -152,6 +184,13 @@ export default function Header() {
           </div>
         </div>
       )}
+
+      {/* Global Voice Drawer Modal */}
+      <VoiceDrawerModal
+        isOpen={voiceModalOpen}
+        onClose={() => setVoiceModalOpen(false)}
+        language={language}
+      />
     </header>
   );
 }

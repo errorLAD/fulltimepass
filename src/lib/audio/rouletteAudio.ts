@@ -2,6 +2,7 @@
 // 100% lightweight, royalty-free synthesized audio with natural Indian comedic voice announcements!
 
 import { Language } from "../language/types";
+import { funnyVoiceEngine, FUNNY_VOICE_CONFIGS } from "./funnyVoiceEngine";
 
 export interface AnnouncementResult {
   index: number;
@@ -515,8 +516,10 @@ class RouletteSoundEngine {
           utterance.voice = voice;
         }
 
-        utterance.pitch = language === "en" ? 1.05 : 1.12;
-        utterance.rate = language === "en" ? 1.0 : 0.95;
+        const voiceId = funnyVoiceEngine.getSelectedVoiceStyle();
+        const cfg = FUNNY_VOICE_CONFIGS[voiceId] || FUNNY_VOICE_CONFIGS["desi-bhai"];
+        utterance.pitch = cfg.pitch;
+        utterance.rate = cfg.rate;
 
         // Dramatic pause before speaking (550ms after wheel stop / sting start)
         const speechTimeout = setTimeout(() => {

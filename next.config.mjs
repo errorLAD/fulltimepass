@@ -2,6 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  experimental: {
+    serverComponentsExternalPackages: ["msedge-tts", "ws"],
+  },
   images: {
     formats: ["image/avif", "image/webp"],
   },
@@ -36,6 +39,24 @@ const nextConfig = {
           },
         ],
       },
+    ];
+  },
+  async redirects() {
+    return [
+      { source: "/delulumeter", destination: "/red-flag-meter", permanent: false },
+      { source: "/delulu-meter", destination: "/red-flag-meter", permanent: false },
+      { source: "/shaadikabhogi", destination: "/shaadi-market-value", permanent: false },
+      { source: "/shaadi-kab-hogi", destination: "/shaadi-market-value", permanent: false },
+      { source: "/groupkagadhaa", destination: "/group-chat-roles", permanent: false },
+      { source: "/group-ka-gadhaa", destination: "/group-chat-roles", permanent: false },
+      { source: "/futurebelike", destination: "/chai-startup-founder", permanent: false },
+      { source: "/future-be-like", destination: "/chai-startup-founder", permanent: false },
+      { source: "/mummykomatbatana", destination: "/family-whatsapp-chat", permanent: false },
+      { source: "/mummy-ko-mat-batana", destination: "/family-whatsapp-chat", permanent: false },
+      { source: "/guesskaroindia", destination: "/trip-cancellation-cbi", permanent: false },
+      { source: "/guess-karo-india", destination: "/trip-cancellation-cbi", permanent: false },
+      { source: "/bahanagenerator", destination: "/kal-se-pakka", permanent: false },
+      { source: "/bahana-generator", destination: "/kal-se-pakka", permanent: false },
     ];
   },
 };

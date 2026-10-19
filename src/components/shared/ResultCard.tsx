@@ -25,6 +25,7 @@ import { trackToolEvent } from "@/lib/analytics";
 import { useLanguage } from "@/lib/language/LanguageContext";
 
 import RealMeter from "@/components/shared/RealMeter";
+import GameAudioBar from "@/components/audio/GameAudioBar";
 
 interface ResultCardProps {
   data: ResultCardData;
@@ -169,8 +170,22 @@ export default function ResultCard({
       transition={{ duration: 0.4, ease: "easeOut" }}
       className="w-full max-w-xl mx-auto space-y-6"
     >
-      {/* Audio Announcement / Speaker Banner (if provided) */}
-      {audioBanner}
+      {/* Audio Announcement / Speaker Banner (Contextual funny voice & sound effects for every game!) */}
+      {audioBanner !== undefined ? (
+        audioBanner
+      ) : (
+        <GameAudioBar
+          toolSlug={data.toolSlug}
+          toolTitle={data.toolTitle}
+          badgeTitle={data.badgeTitle}
+          targetName={data.targetName || data.userName}
+          description={data.description}
+          punchline={data.punchline}
+          score={data.score}
+          scoreLabel={data.scoreLabel}
+          language={language}
+        />
+      )}
 
       {/* THE VIRAL RESULT CARD (CAPTURE TARGET) */}
       <div

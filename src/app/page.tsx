@@ -9,6 +9,7 @@ import {
   Share2,
   CheckCircle,
   Zap,
+  Radio,
 } from "lucide-react";
 import { getLocalizedTools, getLocalizedCategories } from "@/lib/data/tools";
 import ToolCard from "@/components/shared/ToolCard";
@@ -122,6 +123,10 @@ export default function HomePage() {
           <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200 shadow-xs">
             <Sparkles className="w-4 h-4 text-amber-600" />
             <span>{language === "en" ? "Downloadable PNG Cards" : "Downloadable PNG Cards"}</span>
+          </span>
+          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 border border-amber-300 text-amber-950 font-bold shadow-xs">
+            <Radio className="w-4 h-4 text-amber-600 animate-pulse" />
+            <span>{language === "en" ? "🎙️ 7 Funny Voice Styles & SFX" : "🎙️ 7 Funny Voice Styles & SFX"}</span>
           </span>
         </div>
       </section>

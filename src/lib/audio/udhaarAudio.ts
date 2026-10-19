@@ -2,6 +2,7 @@
 // Ridiculously funny, desi, meme-worthy sound effects and voice announcements!
 
 import { Language } from "../language/types";
+import { funnyVoiceEngine, FUNNY_VOICE_CONFIGS } from "./funnyVoiceEngine";
 
 export interface UdhaarAnnouncementResult {
   index: number;
@@ -454,9 +455,11 @@ class UdhaarSoundEngine {
           utterance.voice = voice;
         }
 
-        // Comedy voice modulation
-        utterance.rate = language === "en" ? 1.0 : 1.05;
-        utterance.pitch = language === "en" ? 1.05 : 1.15;
+        // Selected voice style modulation
+        const voiceId = funnyVoiceEngine.getSelectedVoiceStyle();
+        const cfg = FUNNY_VOICE_CONFIGS[voiceId] || FUNNY_VOICE_CONFIGS["desi-bhai"];
+        utterance.rate = cfg.rate;
+        utterance.pitch = cfg.pitch;
         utterance.volume = 1.0;
 
         // Play after sting has had 650ms to build suspense

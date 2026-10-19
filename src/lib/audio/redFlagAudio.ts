@@ -2,6 +2,7 @@
 // Hilarious, dramatic, meme-style Hinglish voice announcements & playful alarm effects!
 
 import { Language } from "../language/types";
+import { funnyVoiceEngine, FUNNY_VOICE_CONFIGS } from "./funnyVoiceEngine";
 
 export interface RedFlagAnnouncementResult {
   index: number;
@@ -526,9 +527,11 @@ class RedFlagSoundEngine {
           utterance.voice = voice;
         }
 
-        // Animated comedy voice modulation
-        utterance.rate = language === "en" ? 1.0 : 1.06;
-        utterance.pitch = language === "en" ? 1.05 : 1.16;
+        // Selected voice style modulation
+        const voiceId = funnyVoiceEngine.getSelectedVoiceStyle();
+        const cfg = FUNNY_VOICE_CONFIGS[voiceId] || FUNNY_VOICE_CONFIGS["desi-bhai"];
+        utterance.rate = cfg.rate;
+        utterance.pitch = cfg.pitch;
         utterance.volume = 1.0;
 
         const delay = category === "danger" ? 600 : 350;

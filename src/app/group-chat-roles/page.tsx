@@ -9,6 +9,7 @@ import { getChatRolesPool } from "@/lib/data/toolDataHelper";
 import { getRandomItems, copyToClipboard, openWhatsAppShare } from "@/lib/utils";
 import { trackToolEvent } from "@/lib/analytics";
 import RelatedTools from "@/components/shared/RelatedTools";
+import GameAudioBar from "@/components/audio/GameAudioBar";
 import Link from "next/link";
 import { useLanguage } from "@/lib/language/LanguageContext";
 
@@ -171,6 +172,23 @@ export default function GroupChatRolesPage() {
           transition={{ duration: 0.4, ease: "easeOut" }}
           className="max-w-2xl mx-auto space-y-6"
         >
+          {/* Contextual Audio Reader */}
+          <GameAudioBar
+            toolSlug="group-chat-roles"
+            toolTitle={isEn ? "Group Chat Role Generator" : "Group Chat Role Generator"}
+            badgeTitle={groupName.trim() || (isEn ? "The Squad Gang" : "Desi Bakchod Gang")}
+            customAudioTitle={isEn ? "Suno Squad Roles 👑" : "Suno Squad Roles 👑"}
+            customAudioSubtitle={
+              isEn
+                ? "Listen to squad cabinet assignments in funny voice"
+                : "Dosto ke official cabinet khitaab aawaz mein suniye"
+            }
+            description={assignedRoles
+              .map((r, i) => `#${i + 1} ${r.name}: ${r.role}. ${r.description}`)
+              .join(". ... ")}
+            language={language}
+          />
+
           {/* THE GROUP LEADERBOARD CARD */}
           <div
             ref={cardRef}

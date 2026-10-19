@@ -204,8 +204,6 @@ export default function RedFlagMeterPage() {
         <ResultCard
           data={result}
           onReset={handleReset}
-          audioBanner={audioBanner}
-          audioAction={audioAction}
         />
       ) : !started ? (
         <form onSubmit={handleStart} className="max-w-md mx-auto p-5 sm:p-8 rounded-3xl bg-white border border-slate-200 shadow-xl space-y-6">

@@ -2,6 +2,7 @@
 // Overdramatic heartbreak-comedy Hinglish voice & funny sad-music / sad-trombone sound effects!
 
 import { Language } from "../language/types";
+import { funnyVoiceEngine, FUNNY_VOICE_CONFIGS } from "./funnyVoiceEngine";
 
 export interface ExYaadAnnouncementResult {
   index: number;
@@ -536,9 +537,11 @@ class ExYaadSoundEngine {
           utterance.voice = voice;
         }
 
-        // Overdramatic heartbreak-comedy voice modulation
-        utterance.rate = language === "en" ? 1.0 : 1.04;
-        utterance.pitch = language === "en" ? 1.05 : 1.14;
+        // Selected voice style modulation
+        const voiceId = funnyVoiceEngine.getSelectedVoiceStyle();
+        const cfg = FUNNY_VOICE_CONFIGS[voiceId] || FUNNY_VOICE_CONFIGS["desi-bhai"];
+        utterance.rate = cfg.rate;
+        utterance.pitch = cfg.pitch;
         utterance.volume = 1.0;
 
         // Give sad sting time to set the comic atmosphere
