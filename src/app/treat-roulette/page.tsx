@@ -10,7 +10,6 @@ import {
   VolumeX,
   Shuffle,
   Users,
-  CheckCircle2,
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { getTreatOccasions, getTreatEnforcementPunchlines } from "@/lib/data/toolDataHelper";
@@ -201,17 +200,17 @@ export default function TreatRoulettePage() {
   const sliceAngle = cleanNames.length > 0 ? 360 / cleanNames.length : 180;
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-6 sm:py-10" suppressHydrationWarning>
+    <div className="max-w-5xl mx-auto px-3.5 sm:px-6 py-5 sm:py-9" suppressHydrationWarning>
       {/* Sleek Page Header */}
-      <div className="text-center max-w-xl mx-auto mb-6 sm:mb-8">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 border border-amber-300 text-amber-900 text-xs font-bold mb-2.5 shadow-2xs">
+      <div className="text-center max-w-xl mx-auto mb-5 sm:mb-7">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 border border-amber-300 text-amber-900 text-xs font-bold mb-2 shadow-2xs">
           <Dices className="w-3.5 h-3.5 text-amber-600" />
           <span>FullTimePass • {isEn ? "The Bill Trap Roulette" : "The Bill Trap Roulette"}</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+        <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-tight">
           {isEn ? "Who Pays The Bill? 🍕" : "Treat Kaun Dega? 🍕"}
         </h1>
-        <p className="mt-2 text-sm sm:text-base text-slate-600 font-medium">
+        <p className="mt-1.5 text-xs sm:text-base text-slate-600 font-medium">
           {isEn
             ? "Spin the wheel to trap the friend who always vanishes when the bill arrives!"
             : "Wheel ghooma aur us dost ko pakad jo bill aate hi washroom bhaag jaata hai!"}
@@ -219,87 +218,92 @@ export default function TreatRoulettePage() {
       </div>
 
       {result ? (
-        <div className="space-y-6">
-          {/* Winner Celebration Banner */}
-          <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white shadow-xl flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <span className="text-3xl sm:text-4xl shrink-0 p-2 rounded-2xl bg-white/15">💸</span>
-              <div>
-                <span className="text-[11px] sm:text-xs uppercase font-black tracking-wider text-amber-200 block">
-                  {isEn ? "Official Bill Sponsor Of The Day" : "Aaj Ka Bakra (Trapped Sponsor)"}
+        /* CLEAN, UNIFIED RESULT DASHBOARD (NO DUPLICATE BOXES!) */
+        <div className="max-w-xl mx-auto space-y-4 sm:space-y-5">
+          {/* 1. Hero Celebratory Winner Banner */}
+          <div className="rounded-3xl p-4 sm:p-6 bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white shadow-xl space-y-3.5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+              <div className="flex items-center gap-3 min-w-0">
+                <span className="text-3xl sm:text-4xl shrink-0 p-2 sm:p-2.5 rounded-2xl bg-white/20 backdrop-blur-xs shadow-xs">
+                  💸
                 </span>
-                <h2 className="text-xl sm:text-2xl font-black text-white leading-tight">
-                  {winner}! 🎉
-                </h2>
-                <span className="text-xs text-amber-100 font-semibold hidden sm:inline">
-                  {isEn ? `Trapped for: ${occasion}` : `Treat: ${occasion}`}
-                </span>
+                <div className="min-w-0">
+                  <span className="text-[10px] sm:text-xs uppercase font-black tracking-wider text-amber-200 block truncate">
+                    {isEn ? "Official Bill Sponsor Of The Day" : "Aaj Ka Bakra (Trapped Sponsor)"}
+                  </span>
+                  <h2 className="text-2xl sm:text-3xl font-black text-white leading-tight break-words">
+                    {winner}! 🎉
+                  </h2>
+                  <span className="text-xs text-amber-100 font-semibold block truncate">
+                    {occasion}
+                  </span>
+                </div>
               </div>
+
+              <button
+                type="button"
+                onClick={handleReset}
+                className="w-full sm:w-auto py-3 px-5 rounded-2xl bg-white hover:bg-amber-50 text-slate-950 font-black text-sm active:scale-95 shadow-md transition-all cursor-pointer flex items-center justify-center gap-2 shrink-0"
+              >
+                <RotateCcw className="w-4 h-4 text-amber-600 stroke-[3]" />
+                <span>{isEn ? "Spin Again 🔄" : "Ghooma Phir Se 🔄"}</span>
+              </button>
             </div>
 
-            <button
-              type="button"
-              onClick={handleReset}
-              className="px-4 py-2.5 sm:px-5 sm:py-3 rounded-2xl bg-white text-slate-950 font-black text-xs sm:text-sm hover:bg-amber-50 active:scale-95 shadow-md transition-all cursor-pointer flex items-center gap-2 shrink-0"
-            >
-              <RotateCcw className="w-4 h-4 text-amber-600 stroke-[3]" />
-              <span>{isEn ? "Spin Again 🔄" : "Ghooma Phir Se 🔄"}</span>
-            </button>
-          </div>
-
-          {/* Live Comedy Voice Announcement Line */}
-          {announcementText && (
-            <div className="p-3.5 sm:p-4 rounded-2xl bg-amber-50 border border-amber-200 shadow-xs flex items-start gap-3">
-              <span className="text-2xl shrink-0 mt-0.5">🎙️</span>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-2 mb-1">
-                  <span className="text-[10px] uppercase font-black tracking-wider text-amber-800">
-                    {isEn ? "Live Audio Voice Punchline" : "Live Comedy Voice Punchline"}
-                  </span>
-                  {soundOn && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (winner) {
-                          const announced = rouletteAudio.playWinnerAnnouncement(winner, language);
-                          setAnnouncementText(announced.displayText);
-                        }
-                      }}
-                      className="text-[10px] font-bold text-amber-800 hover:text-amber-950 flex items-center gap-1 cursor-pointer"
-                    >
-                      <RotateCcw className="w-3 h-3" />
-                      <span>{isEn ? "New Joke" : "Nayi Line"}</span>
-                    </button>
-                  )}
-                </div>
-                <p className="text-sm sm:text-base font-extrabold text-slate-900 leading-snug italic">
+            {/* Integrated Live Voice Punchline Quote */}
+            {announcementText && (
+              <div className="pt-3 border-t border-white/25 flex items-start gap-2.5 text-xs sm:text-sm font-bold text-white/95">
+                <span className="text-base shrink-0 mt-0.5">🎙️</span>
+                <p className="leading-snug italic break-words flex-1">
                   &ldquo;{announcementText}&rdquo;
                 </p>
+                {soundOn && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (winner) {
+                        const announced = rouletteAudio.playWinnerAnnouncement(winner, language);
+                        setAnnouncementText(announced.displayText);
+                      }
+                    }}
+                    className="text-[10px] uppercase font-black px-2 py-0.5 rounded-lg bg-black/25 text-amber-200 hover:bg-black/40 transition-colors shrink-0"
+                    title="Change Joke Line"
+                  >
+                    {isEn ? "New Joke" : "Nayi Line"}
+                  </button>
+                )}
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
-          {/* Shared Natural Human Voice & Sound Effects Bar */}
-          <GameAudioBar
-            toolSlug="treat-roulette"
-            targetName={result.targetName}
-            badgeTitle={result.badgeTitle}
-            description={result.description}
-            punchline={result.punchline}
-            score={result.score}
-            scoreLabel={result.scoreLabel}
-            language={language}
+          {/* 2. Official ResultCard with Unified Audio Bar */}
+          <ResultCard
+            data={result}
+            onReset={handleReset}
+            audioBanner={
+              <GameAudioBar
+                toolSlug="treat-roulette"
+                targetName={result.targetName}
+                badgeTitle={result.badgeTitle}
+                description={result.description}
+                punchline={result.punchline}
+                score={result.score}
+                scoreLabel={result.scoreLabel}
+                language={language}
+              />
+            }
           />
 
-          {/* Result Card for WhatsApp Sharing & Download */}
-          <ResultCard data={result} onReset={handleReset} />
-          <RelatedTools currentSlug="treat-roulette" />
+          {/* Related Games */}
+          <div className="pt-2">
+            <RelatedTools currentSlug="treat-roulette" />
+          </div>
         </div>
       ) : (
         /* UNIFIED SINGLE-CARD ROULETTE DASHBOARD */
-        <div className="bg-white rounded-3xl p-4 sm:p-6 lg:p-8 border-2 border-slate-200 shadow-xl relative overflow-hidden">
+        <div className="bg-white rounded-3xl p-4 sm:p-6 lg:p-7 border-2 border-slate-200 shadow-xl relative overflow-hidden">
           {/* Card Top Header: Status & Sound Toggle */}
-          <div className="flex items-center justify-between pb-3.5 mb-5 border-b border-slate-100">
+          <div className="flex items-center justify-between pb-3 mb-5 border-b border-slate-100">
             <div className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-wider">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span>{isEn ? "100% Fair Physics Engine" : "100% Fair Physics Engine"}</span>
@@ -334,14 +338,14 @@ export default function TreatRoulettePage() {
             {/* LEFT / CENTER: THE ROULETTE WHEEL */}
             <div className="lg:col-span-6 flex flex-col items-center justify-center">
               {/* Pointer Needle at Top */}
-              <div className="z-30 -mb-3 text-3xl filter drop-shadow-[0_4px_6px_rgba(0,0,0,0.3)] select-none">
+              <div className="z-30 -mb-2.5 sm:-mb-3 text-2xl sm:text-3xl filter drop-shadow-[0_4px_6px_rgba(0,0,0,0.3)] select-none">
                 🔻
               </div>
 
-              {/* The SVG Roulette Wheel */}
+              {/* The SVG Roulette Wheel - Scaled safely for mobile screens */}
               <div
                 onClick={spinWheel}
-                className="relative w-64 h-64 sm:w-76 sm:h-76 flex items-center justify-center cursor-pointer group"
+                className="relative w-56 h-56 sm:w-72 sm:h-72 flex items-center justify-center cursor-pointer group select-none touch-manipulation"
                 title={isEn ? "Click to spin the wheel!" : "Ghumane ke liye tap karein!"}
               >
                 <svg
@@ -413,7 +417,7 @@ export default function TreatRoulettePage() {
                 type="button"
                 onClick={spinWheel}
                 disabled={spinning || cleanNames.length < 2}
-                className="w-full sm:w-auto mt-6 px-8 py-4 rounded-2xl text-base sm:text-lg font-black text-slate-950 bg-gradient-to-r from-amber-400 via-amber-300 to-orange-400 hover:from-amber-300 hover:to-orange-300 active:scale-98 shadow-xl shadow-amber-500/20 transition-all flex items-center justify-center gap-2.5 disabled:opacity-50 cursor-pointer"
+                className="w-full sm:w-auto mt-5 sm:mt-6 px-8 py-3.5 sm:py-4 rounded-2xl text-base sm:text-lg font-black text-slate-950 bg-gradient-to-r from-amber-400 via-amber-300 to-orange-400 hover:from-amber-300 hover:to-orange-300 active:scale-98 shadow-xl shadow-amber-500/20 transition-all flex items-center justify-center gap-2.5 disabled:opacity-50 cursor-pointer"
               >
                 <Dices className={`w-5 h-5 ${spinning ? "animate-spin" : ""}`} />
                 <span>
@@ -434,7 +438,7 @@ export default function TreatRoulettePage() {
                 <select
                   value={occasion}
                   onChange={(e) => setOccasion(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800 focus:outline-none focus:border-amber-500 focus:bg-white transition-colors cursor-pointer"
+                  className="w-full px-3.5 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm sm:text-base font-bold text-slate-800 focus:outline-none focus:border-amber-500 focus:bg-white transition-colors cursor-pointer"
                 >
                   {occasions.map((occ, idx) => (
                     <option key={idx} value={occ}>
@@ -465,12 +469,12 @@ export default function TreatRoulettePage() {
                     placeholder={isEn ? "Type name & press Enter..." : "Dost ka naam likho..."}
                     maxLength={20}
                     disabled={names.length >= 8}
-                    className="flex-1 px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:border-amber-500 focus:bg-white transition-colors"
+                    className="flex-1 px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm sm:text-base font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:border-amber-500 focus:bg-white transition-colors"
                   />
                   <button
                     type="submit"
                     disabled={!newNameInput.trim() || names.length >= 8}
-                    className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-850 text-white text-xs font-bold transition-all disabled:opacity-40 cursor-pointer flex items-center gap-1 shrink-0"
+                    className="min-h-[44px] px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-850 text-white text-xs font-bold transition-all disabled:opacity-40 cursor-pointer flex items-center gap-1 shrink-0"
                   >
                     <Plus className="w-3.5 h-3.5 stroke-[3]" />
                     <span>{isEn ? "Add" : "Add"}</span>
@@ -482,7 +486,7 @@ export default function TreatRoulettePage() {
                   {names.map((name, idx) => (
                     <div
                       key={idx}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs text-xs font-bold text-slate-800 hover:border-slate-300 transition-all"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs text-xs sm:text-sm font-bold text-slate-800 hover:border-slate-300 transition-all"
                     >
                       <span
                         className="w-2.5 h-2.5 rounded-full shrink-0"
@@ -493,7 +497,7 @@ export default function TreatRoulettePage() {
                         <button
                           type="button"
                           onClick={() => removeName(idx)}
-                          className="w-4 h-4 rounded-full text-slate-400 hover:text-rose-500 hover:bg-rose-50 flex items-center justify-center transition-colors cursor-pointer ml-0.5"
+                          className="w-5 h-5 rounded-full text-slate-400 hover:text-rose-500 hover:bg-rose-50 flex items-center justify-center transition-colors cursor-pointer ml-0.5"
                           title={isEn ? "Remove" : "Hatao"}
                           aria-label={`Remove ${name}`}
                         >
@@ -528,7 +532,7 @@ export default function TreatRoulettePage() {
                       key={idx}
                       type="button"
                       onClick={() => setNames(preset.members)}
-                      className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-amber-100 hover:text-amber-900 text-slate-700 transition-colors cursor-pointer border border-slate-200"
+                      className="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-amber-100 hover:text-amber-900 text-slate-700 transition-colors cursor-pointer border border-slate-200 active:scale-95"
                     >
                       {preset.label}
                     </button>

@@ -191,7 +191,7 @@ export default function ResultCard({
       <div
         ref={cardRef}
         id="result-card-capture"
-        className="relative bg-white rounded-3xl p-6 sm:p-8 border-2 border-slate-300 shadow-2xl overflow-hidden text-slate-900"
+        className="relative bg-white rounded-3xl p-4 sm:p-8 border-2 border-slate-300 shadow-2xl overflow-hidden text-slate-900"
       >
         {/* Subtle Decorative Background Seal */}
         <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-amber-500/10 blur-2xl pointer-events-none" />
