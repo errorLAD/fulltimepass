@@ -16,9 +16,13 @@
 .player-card, .sub-chip { animation: roster-deal .42s cubic-bezier(.2,.8,.25,1) both; }
 .vs-mark { animation: versus-pulse 1.45s ease-in-out infinite; }
 .vs-mark span { display: grid; width: 58px; height: 58px; place-items: center; border: 3px solid #fff; border-radius: 50%; background: linear-gradient(135deg, #fbbf24, #f97316); box-shadow: 0 7px 20px rgb(124 45 18 / 22%), 0 0 0 3px rgb(251 191 36 / 35%); color: #431407; font-size: 17px; font-weight: 1000; font-style: italic; }
+.team-result-backdrop { background: rgb(2 6 23 / 78%); backdrop-filter: blur(7px); }
+.team-result-popup { background: radial-gradient(ellipse at 50% 0%, #ecfdf5 0%, #fff 42%); }
+.team-result-vs span { display: grid; width: 48px; height: 48px; place-items: center; border: 3px solid #fff; border-radius: 50%; background: linear-gradient(135deg, #fbbf24, #f97316); box-shadow: 0 5px 14px rgb(124 45 18 / 20%); color: #431407; font-size: 14px; font-weight: 1000; font-style: italic; animation: versus-pulse 1.45s ease-in-out infinite; }
 @keyframes roster-deal { from { opacity: 0; transform: translateY(9px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
 @keyframes versus-pulse { 0%, 100% { transform: scale(1) rotate(-4deg); } 50% { transform: scale(1.1) rotate(4deg); } }
-@media (prefers-reduced-motion: reduce) { .player-card, .sub-chip, .vs-mark { animation-duration: .01ms !important; animation-iteration-count: 1 !important; } }
+@keyframes team-result-pop { 0% { opacity: 0; transform: scale(.82) translateY(18px); } 70% { opacity: 1; transform: scale(1.015) translateY(0); } 100% { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .player-card, .sub-chip, .vs-mark, .team-result-vs span, .team-result-popup { animation-duration: .01ms !important; animation-iteration-count: 1 !important; } }
 .toss-page::before {
   position: absolute;
   z-index: -1;
