@@ -100,6 +100,16 @@ export default function HomePage() {
             <span className="text-base">🪙</span>
           </Link>
 
+          {/* Independent cricket team builder */}
+          <Link
+            href="/create-team"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-emerald-700 to-green-600 hover:from-emerald-600 hover:to-green-500 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 transition-all text-center min-h-[44px]"
+          >
+            <span className="text-base">👥</span>
+            <span>Create Team</span>
+            <span className="text-base">🏏</span>
+          </Link>
+
           {/* Explore All 20 Tools Button */}
           <a
             href="#all-tools"
