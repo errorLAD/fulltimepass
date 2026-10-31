@@ -94,6 +94,7 @@ export default function CreateTeamPage() {
       return matchesName && matchesGroup && matchesCountry && matchesStatus && matchesGender;
     });
   }, [search, groupFilter, countryFilter, statusFilter, genderFilter]);
+  const hasDirectoryQuery = search.trim().length > 0 || groupFilter !== "All players" || countryFilter !== "All countries" || statusFilter !== "All statuses" || genderFilter !== "All genders";
 
   const invalidateTeams = () => {
     setTeams(null);
@@ -125,8 +126,8 @@ export default function CreateTeamPage() {
   };
 
   const generate = () => {
-    if (roster.length < 18) {
-      setError(`Choose or enter at least 18 unique players. You currently have ${roster.length}.`);
+    if (roster.length < 4) {
+      setError(`Choose or enter at least 4 unique players. You currently have ${roster.length}.`);
       return;
     }
     setError("");
@@ -140,10 +141,12 @@ export default function CreateTeamPage() {
       attempts++;
     }
     if (order.slice(0, 18).map((player) => player.name).join("\u0000") === previousOrder.current.join("\u0000")) {
-      [order[0], order[9]] = [order[9], order[0]];
+      [order[0], order[1]] = [order[1], order[0]];
     }
-    previousOrder.current = order.slice(0, 18).map((player) => player.name);
-    setTeams({ teamA: order.slice(0, 9), teamB: order.slice(9, 18), substitutes: order.slice(18) });
+    const selectedPlayers = order.slice(0, 18);
+    const splitAt = Math.ceil(selectedPlayers.length / 2);
+    previousOrder.current = selectedPlayers.map((player) => player.name);
+    setTeams({ teamA: selectedPlayers.slice(0, splitAt), teamB: selectedPlayers.slice(splitAt), substitutes: order.slice(18) });
     setCaptainA(null);
     setCaptainB(null);
     setShowResult(false);
@@ -195,7 +198,7 @@ export default function CreateTeamPage() {
         <header className="mt-8 text-center">
           <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white/75 px-4 py-2 text-xs font-extrabold uppercase tracking-[.2em] text-emerald-800"><Users className="h-4 w-4" /> Squad selector</span>
           <h1 className="mt-5 text-4xl font-black tracking-tight text-slate-950 sm:text-6xl">Random Cricket <span className="text-emerald-700">Team Generator</span> 🏏</h1>
-          <p className="mx-auto mt-3 max-w-2xl text-sm text-slate-600 sm:text-base">Find legends in the directory or add your own players, then deal out two teams of nine.</p>
+          <p className="mx-auto mt-3 max-w-2xl text-sm text-slate-600 sm:text-base">Find legends in the directory or add your own players, then deal out two balanced teams of up to nine.</p>
         </header>
 
         <section className="mx-auto mt-9 max-w-5xl rounded-3xl border border-emerald-100 bg-white p-5 shadow-xl shadow-emerald-950/5 sm:p-8">
@@ -208,24 +211,25 @@ export default function CreateTeamPage() {
             <select aria-label="Filter player status" value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className="min-h-12 rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700"><option>All statuses</option><option>Active</option><option>Retired</option></select>
             <select aria-label="Filter player gender" value={genderFilter} onChange={(event) => setGenderFilter(event.target.value)} className="min-h-12 rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700"><option>All genders</option><option>Male</option><option>Female</option></select>
           </div>
-          <div className="mt-3 flex items-center justify-between gap-2"><h3 className="text-sm font-extrabold text-slate-800">Player directory</h3><p className="text-xs text-slate-500">{filteredPlayers.length} matching {filteredPlayers.length === 1 ? "player" : "players"}</p></div>
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-2"><h3 className="text-sm font-extrabold text-slate-800">Player directory</h3><p className="text-xs font-medium text-slate-500">Suggestions are added only when you click <strong>Add Player</strong>.</p></div>
           <div className="mt-2 grid max-h-80 gap-2 overflow-y-auto rounded-2xl border border-slate-100 bg-slate-50/70 p-2 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredPlayers.map((player) => {
+            {!hasDirectoryQuery && <p className="col-span-full px-3 py-8 text-center text-sm font-medium text-slate-500">Search a cricketer&apos;s name or choose a filter to browse directory suggestions. These names are not selected automatically.</p>}
+            {hasDirectoryQuery && filteredPlayers.map((player) => {
               const isInRoster = roster.some((picked) => picked.name.toLocaleLowerCase() === player.name.toLocaleLowerCase());
               return <div key={player.name} className={`flex min-h-[68px] items-center justify-between gap-2 rounded-xl border p-3 transition ${isInRoster ? "border-emerald-300 bg-emerald-50" : "border-slate-200 bg-white"}`}>
                 <span className="min-w-0"><span className="block truncate text-sm font-extrabold text-slate-900">{player.name}</span><span className="mt-0.5 block truncate text-[11px] font-semibold text-slate-500">{player.country} · {player.status} · {player.gender}</span></span>
                 <button type="button" disabled={isInRoster} onClick={() => addDirectoryPlayer(player)} className={`shrink-0 rounded-lg px-3 py-2 text-xs font-extrabold ${isInRoster ? "cursor-default bg-emerald-700 text-white" : "bg-slate-100 text-slate-700 hover:bg-emerald-100 hover:text-emerald-900"}`}>{isInRoster ? <span className="inline-flex items-center gap-1"><Check className="h-3 w-3" /> Added</span> : "Add Player"}</button>
               </div>;
             })}
-            {!filteredPlayers.length && <p className="col-span-full px-3 py-8 text-center text-sm font-medium text-slate-500">No matching players. Try another name or filter.</p>}
+            {hasDirectoryQuery && !filteredPlayers.length && <p className="col-span-full px-3 py-8 text-center text-sm font-medium text-slate-500">No matching directory players. You can still enter {search.trim() ? `“${search.trim()}”` : "a name"} manually below.</p>}
           </div>
 
           {roster.length > 0 && <section className="mt-5 rounded-2xl border border-emerald-100 bg-emerald-50/65 p-4" aria-label="Selected players"><div className="flex flex-wrap items-center justify-between gap-2"><h3 className="text-sm font-extrabold text-emerald-950">Selected players <span className="ml-1 rounded-full bg-white px-2 py-0.5 text-xs">{roster.length}</span></h3><span className="text-xs font-semibold text-emerald-800">Remove any player with ×</span></div><div className="mt-3 flex flex-wrap gap-2">{roster.map((player) => <span key={`${player.source}-${player.name}`} className="inline-flex max-w-full items-center gap-1.5 rounded-full border border-emerald-200 bg-white py-1 pl-3 pr-1 text-xs font-bold text-slate-800"><span className="truncate">{player.name}</span><span className="text-[10px] font-semibold text-slate-400">{player.country}</span><button type="button" onClick={() => removePlayer(player.name)} aria-label={`Remove ${player.name}`} className="ml-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full text-slate-500 hover:bg-rose-100 hover:text-rose-700"><X className="h-3.5 w-3.5" /></button></span>)}</div></section>}
 
-          <section className="mt-6 border-t border-slate-100 pt-5"><div className="flex flex-wrap items-center justify-between gap-2"><div><h3 className="text-base font-extrabold text-slate-900">Enter players manually</h3><p className="mt-1 text-xs text-slate-500">Add names one per line. Directory and manual duplicates count once.</p></div><span className="text-xs font-bold text-slate-600">Roster total: {roster.length}</span></div><textarea value={manualText} onChange={(event) => { setManualText(event.target.value); invalidateTeams(); }} placeholder={"One player per line\nExample: Alex Morgan"} rows={5} aria-label="Enter player names manually, one per line" className="mt-3 min-h-32 w-full resize-y rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm font-medium leading-6 text-slate-900 outline-none focus:border-emerald-600 focus:bg-white" /></section>
+          <section className="mt-6 border-t border-slate-100 pt-5"><div className="flex flex-wrap items-center justify-between gap-2"><div><h3 className="text-base font-extrabold text-slate-900">Enter players manually</h3><p className="mt-1 text-xs text-slate-500">Type names like Mohan, one per line. Only these names are used unless you separately press Add Player above.</p></div><span className="text-xs font-bold text-slate-600">Roster total: {roster.length}</span></div><textarea value={manualText} onChange={(event) => { setManualText(event.target.value); invalidateTeams(); }} placeholder={"Mohan\nOne player per line"} rows={5} aria-label="Enter player names manually, one per line" className="mt-3 min-h-32 w-full resize-y rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm font-medium leading-6 text-slate-900 outline-none focus:border-emerald-600 focus:bg-white" /></section>
 
           {error && <p role="alert" className="mt-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-bold text-rose-700">{error}</p>}
-          <div className="mt-5 flex flex-wrap items-center justify-between gap-3"><p className={`text-sm font-extrabold ${roster.length >= 18 ? "text-emerald-800" : "text-slate-600"}`}>{roster.length}/18 players needed {roster.length >= 18 ? "· Ready to generate" : `· ${18 - roster.length} more needed`}</p><button onClick={generate} className="inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-700 to-green-600 px-5 py-3 text-sm font-black uppercase tracking-wide text-white shadow-lg shadow-emerald-900/15 transition hover:-translate-y-0.5 hover:from-emerald-800 hover:to-green-700 active:translate-y-0 sm:w-auto sm:text-base"><Shuffle className="h-5 w-5" /> Generate Random Teams 🏏</button></div>
+          <div className="mt-5 flex flex-wrap items-center justify-between gap-3"><p className={`text-sm font-extrabold ${roster.length >= 4 ? "text-emerald-800" : "text-slate-600"}`}>{roster.length}/4 players minimum {roster.length >= 4 ? "· Ready to generate" : `· ${4 - roster.length} more needed`}<span className="mt-1 block text-xs font-medium text-slate-500">Balanced teams · up to 9 players per side</span></p><button onClick={generate} className="inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-700 to-green-600 px-5 py-3 text-sm font-black uppercase tracking-wide text-white shadow-lg shadow-emerald-900/15 transition hover:-translate-y-0.5 hover:from-emerald-800 hover:to-green-700 active:translate-y-0 sm:w-auto sm:text-base"><Shuffle className="h-5 w-5" /> Generate Random Teams 🏏</button></div>
           <p className="mt-3 text-[11px] text-slate-400">Starter directory only; active/retired tags are editable labels, not a live roster. No account or saving—refreshing clears your picks.</p>
         </section>
 
@@ -248,7 +252,7 @@ function TeamCard({ name, players, captain, onSelect, side, generation }: { name
   const selectedClass = side === "a" ? "border-emerald-600 bg-emerald-50 text-emerald-950 ring-2 ring-emerald-600/15" : "border-sky-600 bg-sky-50 text-sky-950 ring-2 ring-sky-600/15";
   const badgeClass = side === "a" ? "bg-emerald-700" : "bg-sky-700";
   return <article className={`team-card team-card-${side} rounded-3xl border bg-white p-5 shadow-lg sm:p-7`}>
-    <div className="flex items-center justify-between gap-3"><div><p className={`text-[10px] font-black uppercase tracking-[.2em] ${countClass}`}>9 players</p><h3 className="mt-1 text-2xl font-black text-slate-950">{name}</h3></div><span className={`grid h-11 w-11 place-items-center rounded-2xl ${side === "a" ? "bg-emerald-100 text-emerald-800" : "bg-sky-100 text-sky-800"}`}><Users className="h-5 w-5" /></span></div>
+    <div className="flex items-center justify-between gap-3"><div><p className={`text-[10px] font-black uppercase tracking-[.2em] ${countClass}`}>{players.length} {players.length === 1 ? "player" : "players"}</p><h3 className="mt-1 text-2xl font-black text-slate-950">{name}</h3></div><span className={`grid h-11 w-11 place-items-center rounded-2xl ${side === "a" ? "bg-emerald-100 text-emerald-800" : "bg-sky-100 text-sky-800"}`}><Users className="h-5 w-5" /></span></div>
     <p className="mt-3 rounded-xl bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600">{captain ? <><span className="mr-1">👑</span> Captain: <strong className="text-slate-900">{captain}</strong></> : "Tap one player below to select captain"}</p>
     <div className="mt-4 grid gap-2">{players.map((player, index) => { const isCaptain = player.name === captain; return <button key={`${player.name}-${generation}`} onClick={() => onSelect(player.name)} aria-pressed={isCaptain} className={`player-card flex min-h-11 items-center justify-between gap-3 rounded-xl border px-3 py-2.5 text-left text-sm font-bold transition hover:-translate-y-0.5 ${isCaptain ? selectedClass : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"}`} style={{ animationDelay: `${index * 45}ms` }}><span className="flex min-w-0 items-center gap-3"><span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-slate-100 text-xs font-black text-slate-500">{index + 1}</span><span className="min-w-0 truncate">{player.name}<small className="ml-2 font-medium text-slate-400">{player.country}</small></span></span>{isCaptain ? <span className={`inline-flex items-center gap-1 rounded-full ${badgeClass} px-2 py-1 text-[10px] font-black uppercase text-white`}><Check className="h-3 w-3" /> C</span> : <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Set C</span>}</button>; })}</div>
   </article>;
