@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowDownUp, Check, RotateCw, Search, Shuffle, Users, X } from "lucide-react";
 import { CRICKET_COUNTRIES, CRICKET_PLAYERS, CricketPlayer } from "@/lib/data/cricketPlayers";
 
-type Player = { name: string; country: string; source: "directory" | "manual" };
+type Player = { name: string; country: string; source: "directory" | "manual"; inspiration?: string };
 type Teams = { teamA: Player[]; teamB: Player[]; substitutes: Player[] };
 type GroupFilter = "All players" | "Indian players" | "International players";
 
@@ -19,11 +19,23 @@ const RESULT_LINES = [
 function uniqueNames(value: string) {
   const seen = new Set<string>();
   return value.split(/\r?\n/).map((name) => name.trim()).filter((name) => {
-    const key = name.toLocaleLowerCase();
+    const key = name.replace(/\s*\([^()]*\)\s*$/, "").trim().toLocaleLowerCase();
     if (!name || seen.has(key)) return false;
     seen.add(key);
     return true;
   });
+}
+
+function parseManualEntry(value: string) {
+  const text = value.trim();
+  const pairedName = text.match(/^(.+?)\s*\(\s*(?:is\s+)?(.+?)\s*\)$/i);
+  return pairedName
+    ? { name: pairedName[1].trim(), inspiration: pairedName[2].trim() }
+    : { name: text, inspiration: undefined };
+}
+
+function playerLabel(player: Player) {
+  return player.inspiration ? `${player.name} (as ${player.inspiration})` : player.name;
 }
 
 function combinedRoster(directory: CricketPlayer[], manualText: string): Player[] {
@@ -35,11 +47,12 @@ function combinedRoster(directory: CricketPlayer[], manualText: string): Player[
     seen.add(key);
     result.push({ name: player.name, country: player.country, source: "directory" });
   }
-  for (const name of uniqueNames(manualText)) {
+  for (const line of uniqueNames(manualText)) {
+    const { name, inspiration } = parseManualEntry(line);
     const key = name.toLocaleLowerCase();
     if (seen.has(key)) continue;
     seen.add(key);
-    result.push({ name, country: "Manual entry", source: "manual" });
+    result.push({ name, country: "Manual entry", source: "manual", inspiration });
   }
   return result;
 }
@@ -115,7 +128,7 @@ export default function CreateTeamPage() {
     invalidateTeams();
     const key = name.toLocaleLowerCase();
     setSelectedDirectory((current) => current.filter((player) => player.name.toLocaleLowerCase() !== key));
-    setManualText((current) => current.split(/\r?\n/).filter((line) => line.trim().toLocaleLowerCase() !== key).join("\n"));
+    setManualText((current) => current.split(/\r?\n/).filter((line) => parseManualEntry(line).name.toLocaleLowerCase() !== key).join("\n"));
   };
 
   const freshResultLine = () => {
@@ -132,7 +145,7 @@ export default function CreateTeamPage() {
     }
     setError("");
     const selectedKeys = new Set(selectedDirectory.map((player) => player.name.toLocaleLowerCase()));
-    setManualText(uniqueNames(manualText).filter((name) => !selectedKeys.has(name.toLocaleLowerCase())).join("\n"));
+    setManualText(uniqueNames(manualText).filter((line) => !selectedKeys.has(parseManualEntry(line).name.toLocaleLowerCase())).join("\n"));
 
     let order = shuffled(roster);
     let attempts = 0;
@@ -224,9 +237,9 @@ export default function CreateTeamPage() {
             {hasDirectoryQuery && !filteredPlayers.length && <p className="col-span-full px-3 py-8 text-center text-sm font-medium text-slate-500">No matching directory players. You can still enter {search.trim() ? `“${search.trim()}”` : "a name"} manually below.</p>}
           </div>
 
-          {roster.length > 0 && <section className="mt-5 rounded-2xl border border-emerald-100 bg-emerald-50/65 p-4" aria-label="Selected players"><div className="flex flex-wrap items-center justify-between gap-2"><h3 className="text-sm font-extrabold text-emerald-950">Selected players <span className="ml-1 rounded-full bg-white px-2 py-0.5 text-xs">{roster.length}</span></h3><span className="text-xs font-semibold text-emerald-800">Remove any player with ×</span></div><div className="mt-3 flex flex-wrap gap-2">{roster.map((player) => <span key={`${player.source}-${player.name}`} className="inline-flex max-w-full items-center gap-1.5 rounded-full border border-emerald-200 bg-white py-1 pl-3 pr-1 text-xs font-bold text-slate-800"><span className="truncate">{player.name}</span><span className="text-[10px] font-semibold text-slate-400">{player.country}</span><button type="button" onClick={() => removePlayer(player.name)} aria-label={`Remove ${player.name}`} className="ml-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full text-slate-500 hover:bg-rose-100 hover:text-rose-700"><X className="h-3.5 w-3.5" /></button></span>)}</div></section>}
+          {roster.length > 0 && <section className="mt-5 rounded-2xl border border-emerald-100 bg-emerald-50/65 p-4" aria-label="Selected players"><div className="flex flex-wrap items-center justify-between gap-2"><h3 className="text-sm font-extrabold text-emerald-950">Selected players <span className="ml-1 rounded-full bg-white px-2 py-0.5 text-xs">{roster.length}</span></h3><span className="text-xs font-semibold text-emerald-800">Remove any player with ×</span></div><div className="mt-3 flex flex-wrap gap-2">{roster.map((player) => <span key={`${player.source}-${player.name}`} className="inline-flex max-w-full items-center gap-1.5 rounded-full border border-emerald-200 bg-white py-1 pl-3 pr-1 text-xs font-bold text-slate-800"><span className="truncate">{player.name}{player.inspiration ? <small className="ml-1 font-semibold text-emerald-700">as {player.inspiration}</small> : null}</span><span className="text-[10px] font-semibold text-slate-400">{player.country}</span><button type="button" onClick={() => removePlayer(player.name)} aria-label={`Remove ${player.name}`} className="ml-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full text-slate-500 hover:bg-rose-100 hover:text-rose-700"><X className="h-3.5 w-3.5" /></button></span>)}</div></section>}
 
-          <section className="mt-6 border-t border-slate-100 pt-5"><div className="flex flex-wrap items-center justify-between gap-2"><div><h3 className="text-base font-extrabold text-slate-900">Enter players manually</h3><p className="mt-1 text-xs text-slate-500">Type names like Mohan, one per line. Only these names are used unless you separately press Add Player above.</p></div><span className="text-xs font-bold text-slate-600">Roster total: {roster.length}</span></div><textarea value={manualText} onChange={(event) => { setManualText(event.target.value); invalidateTeams(); }} placeholder={"Mohan\nOne player per line"} rows={5} aria-label="Enter player names manually, one per line" className="mt-3 min-h-32 w-full resize-y rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm font-medium leading-6 text-slate-900 outline-none focus:border-emerald-600 focus:bg-white" /></section>
+          <section className="mt-6 border-t border-slate-100 pt-5"><div className="flex flex-wrap items-center justify-between gap-2"><div><h3 className="text-base font-extrabold text-slate-900">Enter players manually</h3><p className="mt-1 text-xs text-slate-500">One per line. Add a fun cricket identity in parentheses, e.g. <strong>Nimi (Virat Kohli)</strong> or <strong>Mohan (MS Dhoni)</strong>.</p><p className="mt-1 text-xs text-slate-500">These names are used as typed; directory players are only added when you press Add Player.</p></div><span className="text-xs font-bold text-slate-600">Roster total: {roster.length}</span></div><textarea value={manualText} onChange={(event) => { setManualText(event.target.value); invalidateTeams(); }} placeholder={"Nimi (Virat Kohli)\nMohan (MS Dhoni)\nOne player per line"} rows={5} aria-label="Enter player names and optional cricket identities, one per line" className="mt-3 min-h-32 w-full resize-y rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm font-medium leading-6 text-slate-900 outline-none focus:border-emerald-600 focus:bg-white" /></section>
 
           {error && <p role="alert" className="mt-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-bold text-rose-700">{error}</p>}
           <div className="mt-5 flex flex-wrap items-center justify-between gap-3"><p className={`text-sm font-extrabold ${roster.length >= 4 ? "text-emerald-800" : "text-slate-600"}`}>{roster.length}/4 players minimum {roster.length >= 4 ? "· Ready to generate" : `· ${4 - roster.length} more needed`}<span className="mt-1 block text-xs font-medium text-slate-500">Balanced teams · up to 9 players per side</span></p><button onClick={generate} className="inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-700 to-green-600 px-5 py-3 text-sm font-black uppercase tracking-wide text-white shadow-lg shadow-emerald-900/15 transition hover:-translate-y-0.5 hover:from-emerald-800 hover:to-green-700 active:translate-y-0 sm:w-auto sm:text-base"><Shuffle className="h-5 w-5" /> Generate Random Teams 🏏</button></div>
@@ -253,11 +266,12 @@ function TeamCard({ name, players, captain, onSelect, side, generation }: { name
   const badgeClass = side === "a" ? "bg-emerald-700" : "bg-sky-700";
   return <article className={`team-card team-card-${side} rounded-3xl border bg-white p-5 shadow-lg sm:p-7`}>
     <div className="flex items-center justify-between gap-3"><div><p className={`text-[10px] font-black uppercase tracking-[.2em] ${countClass}`}>{players.length} {players.length === 1 ? "player" : "players"}</p><h3 className="mt-1 text-2xl font-black text-slate-950">{name}</h3></div><span className={`grid h-11 w-11 place-items-center rounded-2xl ${side === "a" ? "bg-emerald-100 text-emerald-800" : "bg-sky-100 text-sky-800"}`}><Users className="h-5 w-5" /></span></div>
-    <p className="mt-3 rounded-xl bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600">{captain ? <><span className="mr-1">👑</span> Captain: <strong className="text-slate-900">{captain}</strong></> : "Tap one player below to select captain"}</p>
-    <div className="mt-4 grid gap-2">{players.map((player, index) => { const isCaptain = player.name === captain; return <button key={`${player.name}-${generation}`} onClick={() => onSelect(player.name)} aria-pressed={isCaptain} className={`player-card flex min-h-11 items-center justify-between gap-3 rounded-xl border px-3 py-2.5 text-left text-sm font-bold transition hover:-translate-y-0.5 ${isCaptain ? selectedClass : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"}`} style={{ animationDelay: `${index * 45}ms` }}><span className="flex min-w-0 items-center gap-3"><span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-slate-100 text-xs font-black text-slate-500">{index + 1}</span><span className="min-w-0 truncate">{player.name}<small className="ml-2 font-medium text-slate-400">{player.country}</small></span></span>{isCaptain ? <span className={`inline-flex items-center gap-1 rounded-full ${badgeClass} px-2 py-1 text-[10px] font-black uppercase text-white`}><Check className="h-3 w-3" /> C</span> : <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Set C</span>}</button>; })}</div>
+    <p className="mt-3 rounded-xl bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600">{captain ? <><span className="mr-1">👑</span> Captain: <strong className="text-slate-900">{playerLabel(players.find((player) => player.name === captain)!)}</strong></> : "Tap one player below to select captain"}</p>
+    <div className="mt-4 grid gap-2">{players.map((player, index) => { const isCaptain = player.name === captain; return <button key={`${player.name}-${generation}`} onClick={() => onSelect(player.name)} aria-pressed={isCaptain} className={`player-card flex min-h-11 items-center justify-between gap-3 rounded-xl border px-3 py-2.5 text-left text-sm font-bold transition hover:-translate-y-0.5 ${isCaptain ? selectedClass : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"}`} style={{ animationDelay: `${index * 45}ms` }}><span className="flex min-w-0 items-center gap-3"><span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-slate-100 text-xs font-black text-slate-500">{index + 1}</span><span className="min-w-0 truncate">{player.name}<small className="ml-2 font-medium text-slate-400">{player.inspiration ? `as ${player.inspiration}` : player.country}</small></span></span>{isCaptain ? <span className={`inline-flex items-center gap-1 rounded-full ${badgeClass} px-2 py-1 text-[10px] font-black uppercase text-white`}><Check className="h-3 w-3" /> C</span> : <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Set C</span>}</button>; })}</div>
   </article>;
 }
 
 function ResultTeam({ name, players, captain, side }: { name: string; players: Player[]; captain: string; side: "a" | "b" }) {
-  return <article className={`rounded-2xl border p-4 ${side === "a" ? "border-emerald-200 bg-emerald-50/70" : "border-sky-200 bg-sky-50/70"}`}><h3 className="text-center text-xl font-black text-slate-950">{name}</h3><p className="mt-2 text-center text-xs font-extrabold text-slate-700">👑 Captain: {captain}</p><ol className="mt-3 grid grid-cols-1 gap-1.5 sm:grid-cols-2">{players.map((player, index) => <li key={player.name} className={`flex items-center gap-2 rounded-lg px-2.5 py-2 text-xs font-bold ${player.name === captain ? "bg-white text-slate-950 shadow-sm" : "text-slate-700"}`}><span className="w-4 text-slate-400">{index + 1}.</span><span className="min-w-0 flex-1 truncate">{player.name}</span>{player.name === captain && <span className={`rounded-full px-1.5 py-0.5 text-[9px] font-black text-white ${side === "a" ? "bg-emerald-700" : "bg-sky-700"}`}>C</span>}</li>)}</ol></article>;
+  const captainPlayer = players.find((player) => player.name === captain);
+  return <article className={`rounded-2xl border p-4 ${side === "a" ? "border-emerald-200 bg-emerald-50/70" : "border-sky-200 bg-sky-50/70"}`}><h3 className="text-center text-xl font-black text-slate-950">{name}</h3><p className="mt-2 text-center text-xs font-extrabold text-slate-700">👑 Captain: {captainPlayer ? playerLabel(captainPlayer) : captain}</p><ol className="mt-3 grid grid-cols-1 gap-1.5 sm:grid-cols-2">{players.map((player, index) => <li key={player.name} className={`flex items-center gap-2 rounded-lg px-2.5 py-2 text-xs font-bold ${player.name === captain ? "bg-white text-slate-950 shadow-sm" : "text-slate-700"}`}><span className="w-4 text-slate-400">{index + 1}.</span><span className="min-w-0 flex-1 truncate">{playerLabel(player)}</span>{player.name === captain && <span className={`rounded-full px-1.5 py-0.5 text-[9px] font-black text-white ${side === "a" ? "bg-emerald-700" : "bg-sky-700"}`}>C</span>}</li>)}</ol></article>;
 }
