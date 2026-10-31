@@ -23,6 +23,7 @@ import {
   Coins,
   Coffee,
   Dices,
+  Trophy,
   ArrowRight,
   LucideIcon,
 } from "lucide-react";
@@ -50,6 +51,7 @@ const iconMap: Record<string, LucideIcon> = {
   Coins,
   Coffee,
   Dices,
+  Trophy,
 };
 
 interface ToolCardProps {

@@ -365,6 +365,24 @@ export const TOOLS: ToolDefinition[] = [
     displayOrder: 20,
     featured: true,
   },
+  {
+    id: "tool-21",
+    slug: "cricket-toss",
+    title: "Cricket Toss Simulator 🏏",
+    tagline: "Heads ya tails? Aaj ka match isi call pe hai!",
+    description: "Call the toss, flip a 3D-style cricket coin, and choose to bat or bowl under the stadium lights.",
+    titleEn: "Cricket Toss Simulator 🏏",
+    taglineEn: "Heads or tails? Today’s match starts with your call!",
+    descriptionEn: "Call the toss, flip a 3D-style cricket coin, and choose to bat or bowl under the stadium lights.",
+    category: "Random Fun",
+    icon: "Trophy",
+    color: "#059669",
+    gradient: "from-emerald-800 via-green-700 to-lime-600",
+    badge: "Match Day 🏏",
+    badgeEn: "Match Day 🏏",
+    displayOrder: 21,
+    featured: true,
+  },
 ];
 
 export const CATEGORIES: { label: ToolCategory; emoji: string; desc: string; descEn: string }[] = [
