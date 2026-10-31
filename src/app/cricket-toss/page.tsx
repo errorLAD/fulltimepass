@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
-import { Volume2, VolumeX, RotateCcw, Trophy } from "lucide-react";
+import { Volume2, VolumeX, RotateCcw } from "lucide-react";
 
 type Face = "HEADS" | "TAILS";
 
@@ -76,15 +76,13 @@ export default function CricketTossPage() {
           <p className="mx-auto mt-3 max-w-xl text-sm text-emerald-50/70 sm:text-base">One coin. Two captains. A suspiciously important decision about who gets first use of the pitch.</p>
         </header>
 
-        <section className="mt-10 grid items-center gap-8 rounded-[2rem] border border-white/10 bg-slate-950/55 p-5 shadow-2xl backdrop-blur sm:p-9 lg:grid-cols-[1fr_1.1fr_1fr]">
-          <div className="order-2 rounded-2xl border border-white/10 bg-white/[.04] p-5 text-center lg:order-1">
-            <p className="text-[10px] font-extrabold uppercase tracking-[.24em] text-emerald-100/50">Home captain</p><p className="mt-2 text-xl font-black text-white">TEAM A</p><p className="mt-1 text-xs text-emerald-100/50">You’re calling the toss</p>
-            <div className="mt-5 flex gap-2">
-              {(["HEADS", "TAILS"] as Face[]).map((face) => <button key={face} disabled={flipping || !!result} onClick={() => setPrediction(face)} className={`flex-1 rounded-xl border px-2 py-3 text-xs font-black tracking-wider transition ${prediction === face ? "border-amber-300 bg-amber-300 text-slate-950 shadow-lg shadow-amber-400/20" : "border-white/10 bg-white/5 text-white/65 hover:bg-white/10"}`}>{face} 🪙</button>)}
-            </div>
+        <section className="mx-auto mt-10 max-w-2xl rounded-[2rem] border border-white/10 bg-slate-950/55 p-5 text-center shadow-2xl backdrop-blur sm:p-9">
+          <p className="text-xs font-extrabold uppercase tracking-[.2em] text-emerald-100/65">Step 1 · Pick your call</p>
+          <div className="mx-auto mt-3 flex max-w-sm gap-3">
+            {(["HEADS", "TAILS"] as Face[]).map((face) => <button key={face} disabled={flipping || !!result} onClick={() => setPrediction(face)} aria-pressed={prediction === face} className={`flex-1 rounded-xl border px-4 py-3 text-sm font-black tracking-wider transition ${prediction === face ? "border-amber-300 bg-amber-300 text-slate-950 shadow-lg shadow-amber-400/20" : "border-white/15 bg-white/5 text-white/75 hover:bg-white/10"}`}>{face} 🪙</button>)}
           </div>
 
-          <div className="order-1 flex min-h-[270px] flex-col items-center justify-center lg:order-2">
+          <div className="flex min-h-[250px] flex-col items-center justify-center">
             <div className="coin-stage" aria-label={result ? `Coin landed on ${result}` : "Cricket toss coin"}>
               <div className={`coin ${flipping ? "coin-flipping" : ""}`} style={{ transform: `rotateX(${rotation}deg)` }}>
                 <div className="coin-face coin-front"><span className="coin-star">✦</span><strong>HEADS</strong><small>TEAM A • 01</small></div>
@@ -94,13 +92,8 @@ export default function CricketTossPage() {
             <p className="mt-6 h-5 text-center text-[10px] font-bold uppercase tracking-[.25em] text-amber-100/60">{flipping ? "Coin in flight • eyes on the call" : result ? "The call is final" : "Make your call, captain"}</p>
           </div>
 
-          <div className="order-3 rounded-2xl border border-white/10 bg-white/[.04] p-5 text-center">
-            <p className="text-[10px] font-extrabold uppercase tracking-[.24em] text-emerald-100/50">Away captain</p><p className="mt-2 text-xl font-black text-white">TEAM B</p><p className="mt-1 text-xs text-emerald-100/50">Waiting on the call</p>
-            <div className="mt-5 flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-slate-950/40 px-3 py-3 text-xs font-bold text-white/60"><Trophy className="h-4 w-4 text-amber-300" /> {result ? won ? "You won the toss" : "Team B won the toss" : "Toss winner decides"}</div>
-          </div>
-
-          <div className="order-4 text-center lg:col-span-3">
-            {!result && <button onClick={toss} disabled={flipping} className="rounded-2xl bg-gradient-to-r from-amber-300 to-orange-400 px-8 py-4 text-sm font-black uppercase tracking-[.1em] text-slate-950 shadow-xl shadow-amber-900/30 transition hover:scale-[1.03] hover:shadow-amber-500/20 disabled:cursor-wait disabled:opacity-80">{flipping ? "COIN IN THE AIR…" : "TOSS THE COIN 🏏"}</button>}
+          <div>
+            {!result && <><p className="mb-3 text-xs font-extrabold uppercase tracking-[.2em] text-emerald-100/65">Step 2 · Flip the coin</p><button onClick={toss} disabled={flipping} className="w-full rounded-2xl bg-gradient-to-r from-amber-300 to-orange-400 px-8 py-4 text-sm font-black uppercase tracking-[.1em] text-slate-950 shadow-xl shadow-amber-900/30 transition hover:scale-[1.02] hover:shadow-amber-500/20 disabled:cursor-wait disabled:opacity-80">{flipping ? "COIN IN THE AIR…" : "TOSS THE COIN 🏏"}</button><button onClick={() => setSound(!sound)} aria-pressed={sound} className="mt-4 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-white/45 hover:text-white/75">{sound ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}{sound ? "Stadium sounds on" : "Sound off · tap to enable"}</button></>}
             {result && <div className="animate-[pop-in_.45s_ease-out]">
               <p className="text-xs font-extrabold uppercase tracking-[.3em] text-amber-200">The umpire calls</p>
               <h2 className="mt-1 text-4xl font-black text-white sm:text-5xl">IT&apos;S {result}!</h2>
@@ -113,11 +106,9 @@ export default function CricketTossPage() {
               </div> : <p className="mt-4 text-xs font-semibold text-white/55">Team B wins the toss and will make the call. Maybe ask them nicely?</p>}
               <div className="mt-6 flex flex-wrap justify-center gap-3"><button onClick={reset} className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-5 py-3 text-xs font-black text-white hover:bg-white/10"><RotateCcw className="h-4 w-4" /> TOSS AGAIN</button><button onClick={() => setSound(!sound)} aria-pressed={sound} className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-xs font-bold text-white/70 hover:bg-white/10">{sound ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}{sound ? "SOUND ON" : "SOUND OFF"}</button></div>
             </div>}
-            {!result && <button onClick={() => setSound(!sound)} aria-pressed={sound} className="mt-4 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-white/45 hover:text-white/75">{sound ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}{sound ? "Stadium sounds on" : "Turn on stadium sounds"}</button>}
           </div>
         </section>
-        <div className="mx-auto mt-5 max-w-3xl rounded-2xl border border-amber-100/10 bg-emerald-950/60 px-5 py-4 text-center text-sm text-emerald-50/75"><span className="mr-2 text-amber-300">🎙️ PITCH-SIDE:</span>{comment}</div>
-        <p className="mt-5 text-center text-[10px] font-semibold uppercase tracking-[.18em] text-white/30">Two captains • one coin • absolutely no DRS</p>
+        <div className="mx-auto mt-5 max-w-2xl rounded-2xl border border-amber-100/10 bg-emerald-950/60 px-5 py-4 text-center text-sm text-emerald-50/75"><span className="mr-2 text-amber-300">🎙️</span>{comment}</div>
       </div>
     </main>
   );
