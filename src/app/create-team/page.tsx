@@ -147,10 +147,18 @@ export default function CreateTeamPage() {
     const selectedKeys = new Set(selectedDirectory.map((player) => player.name.toLocaleLowerCase()));
     setManualText(uniqueNames(manualText).filter((line) => !selectedKeys.has(parseManualEntry(line).name.toLocaleLowerCase())).join("\n"));
 
-    let order = shuffled(roster);
+    const rosterNames = new Set(roster.map((player) => player.name.toLocaleLowerCase()));
+    let identityPool = shuffled(CRICKET_PLAYERS.filter((player) => !rosterNames.has(player.name.toLocaleLowerCase())).map((player) => player.name));
+    if (!identityPool.length) identityPool = shuffled(CRICKET_PLAYERS.map((player) => player.name));
+    let identityIndex = 0;
+    const rosterWithIdentities = roster.map((player) => player.source === "manual"
+      ? { ...player, inspiration: identityPool[identityIndex++ % identityPool.length] }
+      : player);
+
+    let order = shuffled(rosterWithIdentities);
     let attempts = 0;
     while (order.slice(0, 18).map((player) => player.name).join("\u0000") === previousOrder.current.join("\u0000") && attempts < 8) {
-      order = shuffled(roster);
+      order = shuffled(rosterWithIdentities);
       attempts++;
     }
     if (order.slice(0, 18).map((player) => player.name).join("\u0000") === previousOrder.current.join("\u0000")) {
@@ -239,7 +247,7 @@ export default function CreateTeamPage() {
 
           {roster.length > 0 && <section className="mt-5 rounded-2xl border border-emerald-100 bg-emerald-50/65 p-4" aria-label="Selected players"><div className="flex flex-wrap items-center justify-between gap-2"><h3 className="text-sm font-extrabold text-emerald-950">Selected players <span className="ml-1 rounded-full bg-white px-2 py-0.5 text-xs">{roster.length}</span></h3><span className="text-xs font-semibold text-emerald-800">Remove any player with ×</span></div><div className="mt-3 flex flex-wrap gap-2">{roster.map((player) => <span key={`${player.source}-${player.name}`} className="inline-flex max-w-full items-center gap-1.5 rounded-full border border-emerald-200 bg-white py-1 pl-3 pr-1 text-xs font-bold text-slate-800"><span className="truncate">{player.name}{player.inspiration ? <small className="ml-1 font-semibold text-emerald-700">as {player.inspiration}</small> : null}</span><span className="text-[10px] font-semibold text-slate-400">{player.country}</span><button type="button" onClick={() => removePlayer(player.name)} aria-label={`Remove ${player.name}`} className="ml-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full text-slate-500 hover:bg-rose-100 hover:text-rose-700"><X className="h-3.5 w-3.5" /></button></span>)}</div></section>}
 
-          <section className="mt-6 border-t border-slate-100 pt-5"><div className="flex flex-wrap items-center justify-between gap-2"><div><h3 className="text-base font-extrabold text-slate-900">Enter players manually</h3><p className="mt-1 text-xs text-slate-500">One per line. Add a fun cricket identity in parentheses, e.g. <strong>Nimi (Virat Kohli)</strong> or <strong>Mohan (MS Dhoni)</strong>.</p><p className="mt-1 text-xs text-slate-500">These names are used as typed; directory players are only added when you press Add Player.</p></div><span className="text-xs font-bold text-slate-600">Roster total: {roster.length}</span></div><textarea value={manualText} onChange={(event) => { setManualText(event.target.value); invalidateTeams(); }} placeholder={"Nimi (Virat Kohli)\nMohan (MS Dhoni)\nOne player per line"} rows={5} aria-label="Enter player names and optional cricket identities, one per line" className="mt-3 min-h-32 w-full resize-y rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm font-medium leading-6 text-slate-900 outline-none focus:border-emerald-600 focus:bg-white" /></section>
+          <section className="mt-6 border-t border-slate-100 pt-5"><div className="flex flex-wrap items-center justify-between gap-2"><div><h3 className="text-base font-extrabold text-slate-900">Enter players manually</h3><p className="mt-1 text-xs text-slate-500">Type nicknames like Nimi or Mohan, one per line. When teams are generated, the game automatically pairs each manual name with a random famous cricketer.</p><p className="mt-1 text-xs text-slate-500">Directory players are only added when you press Add Player.</p></div><span className="text-xs font-bold text-slate-600">Roster total: {roster.length}</span></div><textarea value={manualText} onChange={(event) => { setManualText(event.target.value); invalidateTeams(); }} placeholder={"Nimi\nMohan\nOne player per line"} rows={5} aria-label="Enter player names manually, one per line" className="mt-3 min-h-32 w-full resize-y rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm font-medium leading-6 text-slate-900 outline-none focus:border-emerald-600 focus:bg-white" /></section>
 
           {error && <p role="alert" className="mt-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-bold text-rose-700">{error}</p>}
           <div className="mt-5 flex flex-wrap items-center justify-between gap-3"><p className={`text-sm font-extrabold ${roster.length >= 4 ? "text-emerald-800" : "text-slate-600"}`}>{roster.length}/4 players minimum {roster.length >= 4 ? "· Ready to generate" : `· ${4 - roster.length} more needed`}<span className="mt-1 block text-xs font-medium text-slate-500">Balanced teams · up to 9 players per side</span></p><button onClick={generate} className="inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-700 to-green-600 px-5 py-3 text-sm font-black uppercase tracking-wide text-white shadow-lg shadow-emerald-900/15 transition hover:-translate-y-0.5 hover:from-emerald-800 hover:to-green-700 active:translate-y-0 sm:w-auto sm:text-base"><Shuffle className="h-5 w-5" /> Generate Random Teams 🏏</button></div>
