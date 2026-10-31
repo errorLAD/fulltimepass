@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { Volume2, VolumeX, RotateCcw } from "lucide-react";
+import confetti from "canvas-confetti";
 
 type Face = "HEADS" | "TAILS";
 
@@ -24,6 +25,7 @@ export default function CricketTossPage() {
   const [rotation, setRotation] = useState(0);
   const [choice, setChoice] = useState<"BAT" | "BOWL" | null>(null);
   const [sound, setSound] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
   const [comment, setComment] = useState("The captains are in the middle. Make your call, skipper.");
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const won = result !== null && result === prediction;
@@ -47,6 +49,8 @@ export default function CricketTossPage() {
     timer.current = setTimeout(() => {
       setResult(face);
       setFlipping(false);
+      setShowCelebration(true);
+      void confetti({ particleCount: 110, spread: 78, origin: { y: 0.62 }, colors: ["#fbbf24", "#34d399", "#ffffff"] });
       setComment(commentary[face][Math.floor(Math.random() * commentary[face].length)]);
       if (sound) {
         const audio = new Audio("/sounds/cheer.wav");
@@ -60,6 +64,7 @@ export default function CricketTossPage() {
     if (timer.current) clearTimeout(timer.current);
     setFlipping(false);
     setResult(null);
+    setShowCelebration(false);
     setChoice(null);
     setComment("The captains are in the middle. Make your call, skipper.");
     setRotation(0);
@@ -110,6 +115,15 @@ export default function CricketTossPage() {
         </section>
         <div className="mx-auto mt-5 max-w-2xl rounded-2xl border border-amber-100/10 bg-emerald-950/60 px-5 py-4 text-center text-sm text-emerald-50/75"><span className="mr-2 text-amber-300">🎙️</span>{comment}</div>
       </div>
+      {showCelebration && result && <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/75 px-4 py-6 backdrop-blur-sm" onClick={() => setShowCelebration(false)}>
+        <section role="dialog" aria-modal="true" aria-labelledby="toss-winner-title" onClick={(event) => event.stopPropagation()} className="w-full max-w-md animate-[pop-in_.45s_ease-out] rounded-[2rem] border border-amber-200/30 bg-gradient-to-b from-emerald-900 to-slate-950 p-7 text-center shadow-2xl shadow-amber-950/40 sm:p-9">
+          <div className="text-5xl" aria-hidden="true">🏆</div>
+          <p className="mt-4 text-xs font-extrabold uppercase tracking-[.25em] text-amber-200">Toss winner</p>
+          <h2 id="toss-winner-title" className="mt-2 text-4xl font-black uppercase text-white">Team {won ? "A" : "B"} wins!</h2>
+          <p className="mt-3 text-sm text-emerald-50/75">{won ? "Brilliant call, captain! The toss is yours." : "The coin picked Team B. Their captain is heading to the umpire."}</p>
+          <button autoFocus onClick={() => setShowCelebration(false)} className="mt-7 w-full rounded-xl bg-gradient-to-r from-amber-300 to-orange-400 px-6 py-3.5 text-sm font-black uppercase tracking-wider text-slate-950 shadow-lg hover:brightness-105">{won ? "CHOOSE BAT OR BOWL 🏏" : "BACK TO THE MATCH"}</button>
+        </section>
+      </div>}
     </main>
   );
 }
