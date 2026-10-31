@@ -36,7 +36,25 @@
 .coin-star { margin-bottom: 4px; font-size: 25px; line-height: 1; }
 @keyframes coin-bob { from { translate: 0 0; } to { translate: 0 -15px; } }
 @keyframes pop-in { from { opacity: 0; transform: translateY(12px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.comic-backdrop { background: rgb(2 6 23 / 82%); }
+.comic-popup { isolation: isolate; overflow: hidden; background: repeating-conic-gradient(from -8deg at 50% 48%, #fde047 0deg 12deg, #fb923c 12deg 24deg, #fda4af 24deg 36deg); }
+.comic-popup::before { position: absolute; z-index: -1; inset: 10px; border: 2px solid rgb(15 23 42 / 15%); border-radius: 1.35rem; content: ""; background: radial-gradient(ellipse at center, rgb(255 255 255 / 83%) 0%, rgb(255 255 255 / 42%) 43%, transparent 75%); }
+.comic-popup::after { position: absolute; z-index: -1; inset: 0; content: ""; opacity: .2; background-image: radial-gradient(#0f172a 1px, transparent 1px); background-size: 11px 11px; mask-image: linear-gradient(90deg, #000, transparent 24%, transparent 76%, #000); }
+.comic-boom { display: inline-block; transform: rotate(-5deg); color: #ef4444; font-size: clamp(3.5rem, 13vw, 5.8rem); font-weight: 1000; line-height: .95; -webkit-text-stroke: 2px #0f172a; paint-order: stroke fill; text-shadow: 3px 4px 0 #fff, 7px 8px 0 #0f172a; animation: comic-bounce .7s ease-in-out infinite alternate; }
+.comic-burst { position: absolute; top: 15%; left: 50%; z-index: -1; color: #facc15; font-size: clamp(9rem, 32vw, 16rem); line-height: 1; transform: translate(-50%, -30%) rotate(-12deg); filter: drop-shadow(4px 5px 0 rgb(15 23 42 / 55%)); animation: comic-boom .55s ease-out both; }
+.comic-speech { animation: bubble-pop .45s .15s backwards; }
+.comic-tail { position: absolute; bottom: -12px; left: 26%; width: 20px; height: 20px; border-right: 3px solid #0f172a; border-bottom: 3px solid #0f172a; background: #fff; transform: skewY(35deg) rotate(25deg); }
+.comic-float { position: absolute; z-index: 10; font-size: clamp(1.5rem, 6vw, 2.5rem); filter: drop-shadow(2px 3px 0 rgb(15 23 42 / 40%)); animation: comic-float 1.35s ease-in-out infinite alternate; }
+.comic-float-one { top: 18%; left: 6%; transform: rotate(-18deg); }
+.comic-float-two { top: 12%; right: 12%; animation-delay: .25s; }
+.comic-float-three { right: 5%; bottom: 30%; transform: rotate(25deg); animation-delay: .45s; }
+@keyframes comic-pop { 0% { opacity: 0; transform: scale(.35) rotate(-9deg); } 65% { opacity: 1; transform: scale(1.06) rotate(2deg); } 82% { transform: scale(.96) rotate(-1deg); } 100% { transform: scale(1) rotate(0); } }
+@keyframes comic-bounce { from { transform: rotate(-5deg) translateY(0) scale(1); } to { transform: rotate(2deg) translateY(-5px) scale(1.035); } }
+@keyframes comic-boom { from { opacity: 0; transform: translate(-50%, -30%) rotate(-35deg) scale(.2); } to { opacity: .9; transform: translate(-50%, -30%) rotate(-12deg) scale(1); } }
+@keyframes bubble-pop { from { opacity: 0; transform: scale(.6) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+@keyframes comic-float { from { translate: 0 5px; rotate: -8deg; } to { translate: 0 -9px; rotate: 8deg; } }
 @media (prefers-reduced-motion: reduce) { .coin, .coin-flipping { transition-duration: .01ms; animation-duration: .01ms; } }
+@media (prefers-reduced-motion: reduce) { .comic-boom, .comic-burst, .comic-speech, .comic-float, .comic-popup { animation-duration: .01ms !important; animation-iteration-count: 1 !important; } }
 
 :root {
   --background: #f8fafc;

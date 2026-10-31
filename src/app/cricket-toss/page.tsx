@@ -2,15 +2,32 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
-import { Volume2, VolumeX, RotateCcw } from "lucide-react";
+import { Volume2, VolumeX, RotateCcw, X } from "lucide-react";
 import confetti from "canvas-confetti";
 
 type Face = "HEADS" | "TAILS";
 
-const commentary: Record<Face, string[]> = {
-  HEADS: ["The coin has spoken! The dugout is already arguing about batting order.", "HEADS it is! Somewhere, a captain just started practicing their victory speech.", "A clean call! The dressing room analyst claims they predicted it all along."],
-  TAILS: ["TAILS! The crowd goes wild and one commentator drops their scorecard.", "Tails wins the toss! The opposition is suddenly very interested in the pitch report.", "The coin lands on TAILS! That spinner in the dugout feels oddly confident now."],
-};
+const winningLines = [
+  "Bhai toss jeet gaya, ab match bhi jeet ke dikha! 😂",
+  "Kismat chamak gayi! Ab batting kar ya bowling? 🏏",
+  "Captain sahab, decision soch samajh ke lena! 😎",
+  "Toss toh jeet liya, ab trophy bhi le aa! 🏆",
+  "Wah bhai! Coin reading master! 🧠",
+  "Future dekh raha hai kya? 🔮",
+];
+const losingLines = [
+  "Oye hoye! Kismat ne dhoka de diya! 😂",
+  "Toss gaya haath se, ab match mein comeback dikha! 🔥",
+  "Coin bhi aaj opponent ki side hai! 💀",
+  "Bhai prediction mein toh zero marks! 😂",
+  "Coin ne teri planning fail kar di! 🤡",
+];
+
+function pickFreshCommentary(won: boolean, previous: string | null) {
+  const options = won ? winningLines : losingLines;
+  const fresh = options.filter((line) => line !== previous);
+  return fresh[Math.floor(Math.random() * fresh.length)];
+}
 
 function randomFace(): Face {
   const value = new Uint32Array(1);
@@ -28,7 +45,9 @@ export default function CricketTossPage() {
   const [showCelebration, setShowCelebration] = useState(false);
   const [comment, setComment] = useState("The captains are in the middle. Make your call, skipper.");
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastCommentary = useRef<string | null>(null);
   const won = result !== null && result === prediction;
+  const winningTeam = won ? "Team A" : "Team B";
 
   const toss = () => {
     if (flipping) return;
@@ -37,6 +56,7 @@ export default function CricketTossPage() {
     setResult(null);
     setChoice(null);
     setComment("Up she goes... the whole stadium is holding its breath!");
+    setShowCelebration(false);
     // Match the physical final face even when the previous toss ended on TAILS.
     const currentIsTails = Math.abs(Math.round(rotation / 180) % 2) === 1;
     const needsHalfTurn = currentIsTails !== (face === "TAILS");
@@ -47,15 +67,23 @@ export default function CricketTossPage() {
       void audio.play().catch(() => {});
     }
     timer.current = setTimeout(() => {
+      const userWon = face === prediction;
+      const punchline = pickFreshCommentary(userWon, lastCommentary.current);
+      lastCommentary.current = punchline;
       setResult(face);
       setFlipping(false);
       setShowCelebration(true);
-      void confetti({ particleCount: 110, spread: 78, origin: { y: 0.62 }, colors: ["#fbbf24", "#34d399", "#ffffff"] });
-      setComment(commentary[face][Math.floor(Math.random() * commentary[face].length)]);
+      void confetti({ particleCount: 150, spread: 95, startVelocity: 42, origin: { y: 0.62 }, colors: ["#fbbf24", "#34d399", "#ffffff", "#fb7185"] });
+      setTimeout(() => void confetti({ particleCount: 65, angle: 60, spread: 55, origin: { x: 0 } }), 180);
+      setTimeout(() => void confetti({ particleCount: 65, angle: 120, spread: 55, origin: { x: 1 } }), 180);
+      setComment(punchline);
       if (sound) {
-        const audio = new Audio("/sounds/cheer.wav");
-        audio.volume = 0.55;
-        void audio.play().catch(() => {});
+        const impact = new Audio("/sounds/whoosh.wav");
+        impact.volume = 0.45;
+        void impact.play().catch(() => {});
+        const reaction = new Audio(userWon ? "/sounds/cheer.wav" : "/sounds/fail.wav");
+        reaction.volume = 0.55;
+        void reaction.play().catch(() => {});
       }
     }, 2900);
   };
@@ -104,24 +132,32 @@ export default function CricketTossPage() {
               <h2 className="mt-1 text-4xl font-black text-white sm:text-5xl">IT&apos;S {result}!</h2>
               <p className={`mt-2 text-sm font-extrabold ${won ? "text-emerald-300" : "text-rose-300"}`}>{won ? "You called it! Absolute toss wizardry. 🎉" : "Wrong call! The coin has no respect for confidence. 😅"}</p>
               <div className="mx-auto mt-5 max-w-2xl rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-emerald-50/80">🎙️ {comment}</div>
-              {won ? <div className="mt-5">
-                <p className="mb-3 text-sm font-bold text-white">You won the toss! Choose to BAT or BOWL.</p>
-                <div className="flex justify-center gap-3">{(["BAT", "BOWL"] as const).map((action) => <button key={action} onClick={() => { setChoice(action); setComment(action === "BAT" ? "Brave call! The openers are padding up. Team A will bat first." : "A bowling first call! The quicks are warming up and the field is being set."); }} className={`rounded-xl px-7 py-3 text-sm font-black ${choice === action ? "bg-emerald-300 text-slate-950" : "border border-emerald-200/30 bg-emerald-400/10 text-emerald-100 hover:bg-emerald-400/20"}`}>{action} 🏏</button>)}</div>
-                {choice && <p className="mt-3 text-sm font-extrabold text-amber-200">Team A chose to {choice} first!</p>}
-              </div> : <p className="mt-4 text-xs font-semibold text-white/55">Team B wins the toss and will make the call. Maybe ask them nicely?</p>}
+              <div className="mt-5">
+                <p className="mb-3 text-sm font-bold text-white">{winningTeam} won the toss! Choose BAT or BOWL.</p>
+                <div className="flex justify-center gap-3">{(["BAT", "BOWL"] as const).map((action) => <button key={action} onClick={() => { setChoice(action); setComment(action === "BAT" ? `${winningTeam} will bat first! The openers are padding up.` : `${winningTeam} will bowl first! The quicks are warming up.`); }} className={`rounded-xl px-7 py-3 text-sm font-black ${choice === action ? "bg-emerald-300 text-slate-950" : "border border-emerald-200/30 bg-emerald-400/10 text-emerald-100 hover:bg-emerald-400/20"}`}>{action} 🏏</button>)}</div>
+                {choice && <p className="mt-3 text-sm font-extrabold text-amber-200">{winningTeam} chose to {choice} first!</p>}
+              </div>
               <div className="mt-6 flex flex-wrap justify-center gap-3"><button onClick={reset} className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-5 py-3 text-xs font-black text-white hover:bg-white/10"><RotateCcw className="h-4 w-4" /> TOSS AGAIN</button><button onClick={() => setSound(!sound)} aria-pressed={sound} className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-xs font-bold text-white/70 hover:bg-white/10">{sound ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}{sound ? "SOUND ON" : "SOUND OFF"}</button></div>
             </div>}
           </div>
         </section>
         <div className="mx-auto mt-5 max-w-2xl rounded-2xl border border-amber-100/10 bg-emerald-950/60 px-5 py-4 text-center text-sm text-emerald-50/75"><span className="mr-2 text-amber-300">🎙️</span>{comment}</div>
       </div>
-      {showCelebration && result && <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/75 px-4 py-6 backdrop-blur-sm" onClick={() => setShowCelebration(false)}>
-        <section role="dialog" aria-modal="true" aria-labelledby="toss-winner-title" onClick={(event) => event.stopPropagation()} className="w-full max-w-md animate-[pop-in_.45s_ease-out] rounded-[2rem] border border-amber-200/30 bg-gradient-to-b from-emerald-900 to-slate-950 p-7 text-center shadow-2xl shadow-amber-950/40 sm:p-9">
-          <div className="text-5xl" aria-hidden="true">🏆</div>
-          <p className="mt-4 text-xs font-extrabold uppercase tracking-[.25em] text-amber-200">Toss winner</p>
-          <h2 id="toss-winner-title" className="mt-2 text-4xl font-black uppercase text-white">Team {won ? "A" : "B"} wins!</h2>
-          <p className="mt-3 text-sm text-emerald-50/75">{won ? "Brilliant call, captain! The toss is yours." : "The coin picked Team B. Their captain is heading to the umpire."}</p>
-          <button autoFocus onClick={() => setShowCelebration(false)} className="mt-7 w-full rounded-xl bg-gradient-to-r from-amber-300 to-orange-400 px-6 py-3.5 text-sm font-black uppercase tracking-wider text-slate-950 shadow-lg hover:brightness-105">{won ? "CHOOSE BAT OR BOWL 🏏" : "BACK TO THE MATCH"}</button>
+      {showCelebration && result && <div className="comic-backdrop fixed inset-0 z-50 flex items-center justify-center px-4 py-5 backdrop-blur-sm" onClick={() => setShowCelebration(false)}>
+        <section role="dialog" aria-modal="true" aria-labelledby="toss-winner-title" onClick={(event) => event.stopPropagation()} className="comic-popup relative w-full max-w-lg animate-[comic-pop_.72s_cubic-bezier(.16,1.3,.35,1)] rounded-[2rem] border-4 border-slate-950 p-6 text-center shadow-2xl sm:p-9">
+          <button aria-label="Close result popup" onClick={() => setShowCelebration(false)} className="absolute right-3 top-3 z-20 grid h-10 w-10 place-items-center rounded-full border-2 border-slate-950 bg-white text-slate-900 shadow-md transition hover:rotate-90"><X className="h-5 w-5" /></button>
+          <span className="comic-float comic-float-one" aria-hidden="true">🏏</span><span className="comic-float comic-float-two" aria-hidden="true">⭐</span><span className="comic-float comic-float-three" aria-hidden="true">🏏</span>
+          <div className="comic-burst" aria-hidden="true">💥</div>
+          <p className="comic-boom relative z-10">BOOM!</p>
+          <p className="relative z-10 mt-1 text-[11px] font-black uppercase tracking-[.25em] text-slate-800/70">The umpire has spoken</p>
+          <h2 id="toss-winner-title" className="relative z-10 mt-1 text-3xl font-black uppercase leading-none text-slate-950 sm:text-5xl">IT&apos;S {result}!</h2>
+          <div className="comic-speech relative z-10 mx-auto mt-5 max-w-sm rounded-2xl border-[3px] border-slate-950 bg-white px-4 py-3 text-sm font-extrabold leading-snug text-slate-900 shadow-[4px_5px_0_#0f172a] sm:text-base">{comment}<span className="comic-tail" aria-hidden="true" /></div>
+          <p className={`relative z-10 mt-4 text-sm font-black uppercase tracking-wide ${won ? "text-emerald-950" : "text-rose-950"}`}>{winningTeam} won the toss! {won ? "🎉" : "😅"}</p>
+          <div className="relative z-10 mt-6 grid gap-3 sm:grid-cols-2">
+            <button autoFocus onClick={() => setShowCelebration(false)} className="rounded-xl border-[3px] border-slate-950 bg-emerald-300 px-4 py-3.5 text-sm font-black uppercase tracking-wide text-slate-950 shadow-[4px_5px_0_#0f172a] transition hover:translate-y-[-2px] hover:shadow-[4px_7px_0_#0f172a]">Continue 🏏</button>
+            <button onClick={reset} className="inline-flex items-center justify-center gap-2 rounded-xl border-[3px] border-slate-950 bg-amber-300 px-4 py-3.5 text-sm font-black uppercase tracking-wide text-slate-950 shadow-[4px_5px_0_#0f172a] transition hover:translate-y-[-2px] hover:shadow-[4px_7px_0_#0f172a]"><RotateCcw className="h-4 w-4" /> Toss Again</button>
+          </div>
+          <p className="relative z-10 mt-4 text-[10px] font-black uppercase tracking-wider text-slate-800/60">{sound ? "🔊 Comic sounds on" : "🔇 Sounds off"} · tap outside to close</p>
         </section>
       </div>}
     </main>
