@@ -228,18 +228,19 @@ export default function CreateTeamPage() {
             <select aria-label="Filter player status" value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className="min-h-12 rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700"><option>All statuses</option><option>Active</option><option>Retired</option></select>
             <select aria-label="Filter player gender" value={genderFilter} onChange={(event) => setGenderFilter(event.target.value)} className="min-h-12 rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700"><option>All genders</option><option>Male</option><option>Female</option></select>
           </div>
+          {hasDirectoryQuery && <>
           <div className="mt-3 flex flex-wrap items-center justify-between gap-2"><h3 className="text-sm font-extrabold text-slate-800">Player directory</h3><p className="text-xs font-medium text-slate-500">Suggestions are added only when you click <strong>Add Player</strong>.</p></div>
           <div className="mt-2 grid max-h-80 gap-2 overflow-y-auto rounded-2xl border border-slate-100 bg-slate-50/70 p-2 sm:grid-cols-2 lg:grid-cols-3">
-            {!hasDirectoryQuery && <p className="col-span-full px-3 py-8 text-center text-sm font-medium text-slate-500">Search a cricketer&apos;s name or choose a filter to browse directory suggestions. These names are not selected automatically.</p>}
-            {hasDirectoryQuery && filteredPlayers.map((player) => {
+            {filteredPlayers.map((player) => {
               const isInRoster = roster.some((picked) => picked.name.toLocaleLowerCase() === player.name.toLocaleLowerCase());
               return <div key={player.name} className={`flex min-h-[68px] items-center justify-between gap-2 rounded-xl border p-3 transition ${isInRoster ? "border-emerald-300 bg-emerald-50" : "border-slate-200 bg-white"}`}>
                 <span className="min-w-0"><span className="block truncate text-sm font-extrabold text-slate-900">{player.name}</span><span className="mt-0.5 block truncate text-[11px] font-semibold text-slate-500">{player.country} · {player.status} · {player.gender}</span></span>
                 <button type="button" disabled={isInRoster} onClick={() => addDirectoryPlayer(player)} className={`shrink-0 rounded-lg px-3 py-2 text-xs font-extrabold ${isInRoster ? "cursor-default bg-emerald-700 text-white" : "bg-slate-100 text-slate-700 hover:bg-emerald-100 hover:text-emerald-900"}`}>{isInRoster ? <span className="inline-flex items-center gap-1"><Check className="h-3 w-3" /> Added</span> : "Add Player"}</button>
               </div>;
             })}
-            {hasDirectoryQuery && !filteredPlayers.length && <p className="col-span-full px-3 py-8 text-center text-sm font-medium text-slate-500">No matching directory players. You can still enter {search.trim() ? `“${search.trim()}”` : "a name"} manually below.</p>}
+            {!filteredPlayers.length && <p className="col-span-full px-3 py-8 text-center text-sm font-medium text-slate-500">No matching directory players. You can still enter {search.trim() ? `“${search.trim()}”` : "a name"} manually below.</p>}
           </div>
+          </>}
 
           {roster.length > 0 && <section className="mt-5 rounded-2xl border border-emerald-100 bg-emerald-50/65 p-4" aria-label="Selected players"><div className="flex flex-wrap items-center justify-between gap-2"><h3 className="text-sm font-extrabold text-emerald-950">Selected players <span className="ml-1 rounded-full bg-white px-2 py-0.5 text-xs">{roster.length}</span></h3><span className="text-xs font-semibold text-emerald-800">Remove any player with ×</span></div><div className="mt-3 flex flex-wrap gap-2">{roster.map((player) => <span key={`${player.source}-${player.name}`} className="inline-flex max-w-full items-center gap-1.5 rounded-full border border-emerald-200 bg-white py-1 pl-3 pr-1 text-xs font-bold text-slate-800"><span className="truncate">{player.name}{player.inspiration ? <small className="ml-1 font-semibold text-emerald-700">as {player.inspiration}</small> : null}</span><span className="text-[10px] font-semibold text-slate-400">{player.country}</span><button type="button" onClick={() => removePlayer(player.name)} aria-label={`Remove ${player.name}`} className="ml-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full text-slate-500 hover:bg-rose-100 hover:text-rose-700"><X className="h-3.5 w-3.5" /></button></span>)}</div></section>}
 
