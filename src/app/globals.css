@@ -10,7 +10,8 @@
   overflow: hidden;
   background: radial-gradient(ellipse at 50% 55%, #16713e 0%, #0a442d 35%, #05251f 72%, #031510 100%);
 }
-.team-generator { background: radial-gradient(ellipse at 50% -15%, #d1fae5 0%, #f0fdf4 38%, #f8fafc 78%); }
+.team-generator { min-width: 0; overflow-x: clip; background: radial-gradient(ellipse at 50% -15%, #d1fae5 0%, #f0fdf4 38%, #f8fafc 78%); }
+.team-card, .team-result-popup, .team-result-popup article { min-width: 0; }
 .team-card-a { border-color: #a7f3d0; background: linear-gradient(150deg, #fff 30%, #f0fdf4 100%); }
 .team-card-b { border-color: #bae6fd; background: linear-gradient(150deg, #fff 30%, #f0f9ff 100%); }
 .player-card, .sub-chip { animation: roster-deal .42s cubic-bezier(.2,.8,.25,1) both; }
@@ -28,11 +29,13 @@
 @keyframes team-result-pop { 0% { opacity: 0; transform: scale(.82) translateY(18px); } 70% { opacity: 1; transform: scale(1.015) translateY(0); } 100% { transform: scale(1); } }
 @media (prefers-reduced-motion: reduce) { .player-card, .sub-chip, .vs-mark, .team-result-vs span, .team-result-popup { animation-duration: .01ms !important; animation-iteration-count: 1 !important; } }
 @media (max-width: 639px) {
+  .team-generator h1 { font-size: clamp(1.8rem, 9vw, 2.5rem); line-height: 1.08; }
   .team-card { padding: 1rem; }
   .player-card { gap: 6px; padding-left: .55rem; padding-right: .55rem; }
   .player-identity { flex-wrap: wrap; gap: 4px 6px; }
   .cricket-identity-badge { white-space: normal; }
-  .team-result-popup { max-height: calc(100dvh - 1.5rem); overflow-y: auto; padding: 1rem; }
+  .team-result-backdrop { align-items: flex-start; padding: max(.75rem, env(safe-area-inset-top)) .75rem max(.75rem, env(safe-area-inset-bottom)); }
+  .team-result-popup { max-height: calc(100dvh - 1.5rem); overflow-y: auto; padding: 1rem; border-radius: 1.25rem; }
   .team-result-popup ol { grid-template-columns: minmax(0, 1fr); }
   .team-result-vs { padding: .2rem 0; }
   .team-result-vs span { width: 38px; height: 38px; font-size: 12px; }
