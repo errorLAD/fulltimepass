@@ -10,6 +10,15 @@
   overflow: hidden;
   background: radial-gradient(ellipse at 50% 55%, #16713e 0%, #0a442d 35%, #05251f 72%, #031510 100%);
 }
+.team-generator { background: radial-gradient(ellipse at 50% -15%, #d1fae5 0%, #f0fdf4 38%, #f8fafc 78%); }
+.team-card-a { border-color: #a7f3d0; background: linear-gradient(150deg, #fff 30%, #f0fdf4 100%); }
+.team-card-b { border-color: #bae6fd; background: linear-gradient(150deg, #fff 30%, #f0f9ff 100%); }
+.player-card, .sub-chip { animation: roster-deal .42s cubic-bezier(.2,.8,.25,1) both; }
+.vs-mark { animation: versus-pulse 1.45s ease-in-out infinite; }
+.vs-mark span { display: grid; width: 58px; height: 58px; place-items: center; border: 3px solid #fff; border-radius: 50%; background: linear-gradient(135deg, #fbbf24, #f97316); box-shadow: 0 7px 20px rgb(124 45 18 / 22%), 0 0 0 3px rgb(251 191 36 / 35%); color: #431407; font-size: 17px; font-weight: 1000; font-style: italic; }
+@keyframes roster-deal { from { opacity: 0; transform: translateY(9px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes versus-pulse { 0%, 100% { transform: scale(1) rotate(-4deg); } 50% { transform: scale(1.1) rotate(4deg); } }
+@media (prefers-reduced-motion: reduce) { .player-card, .sub-chip, .vs-mark { animation-duration: .01ms !important; animation-iteration-count: 1 !important; } }
 .toss-page::before {
   position: absolute;
   z-index: -1;

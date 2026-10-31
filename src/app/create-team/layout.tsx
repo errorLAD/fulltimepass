@@ -1,11 +1,11 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Create a Cricket Team | FullTimePass",
-  description: "Pick your cricket squad, choose a captain, and save your teams on this device.",
+  title: "Random Cricket Team Generator | FullTimePass",
+  description: "Shuffle your cricket players into two random teams, pick both captains, and see the substitutes.",
   openGraph: {
-    title: "Create Your Cricket Team 🏏 | FullTimePass.in",
-    description: "Build a squad of up to 11 players and choose its captain.",
+    title: "Random Cricket Team Generator 🏏 | FullTimePass.in",
+    description: "Make two random cricket teams and choose both captains.",
     url: "https://fulltimepass.in/create-team",
   },
 };
